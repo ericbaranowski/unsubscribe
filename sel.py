@@ -125,18 +125,13 @@ def process(unsub, browser):
 			except Exception as e:
 				log.log('exception', e)
 	buttonTags = browser.find_elements_by_xpath("//button")
-	buttonTags = browser.find_elements_by_tag_name("button")
-	log.log('mylen',len(buttonTags))
 	for buttonTag in buttonTags:
 		text = buttonTag.text.lower()
 		log.log('bllllahh',buttonTag.tag_name, text, buttonTag.get_attribute('type'))
 		if any(pos in text for pos in buttonPositives):
-			log.log('got here')
 			time.sleep(delay)
 			try:
-				log.log('triying to submit')
 				buttonTag.click()
-				log.log('submiteeed')
 				return browser
 			except Exception as e:
 				log.log('exception', e)
