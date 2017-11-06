@@ -18,6 +18,7 @@ import imaplib
 import email
 
 linkPositives = ['unsubscribe', 'remove', 'stop receiv']
+linkNearby = ['click here']
 
 def writeFile(s):
   f = open('email.html','w')
@@ -36,28 +37,63 @@ def getCandidate(body, keyword, start):
   lower = body.lower()
   index = lower.find(keyword,start)
   if index == -1:
-    return None
+    return None, start
   httpIndex = body.find('http', index)
   if httpIndex - index > 100:
-    return None
-  endIndex = body.find('>', httpIndex + 2)
+    return None, start
+  endKarat = body.find('>', httpIndex + 2)
+  endQuote = body.find('"', httpIndex + 2)
+  endIndex = min(endKarat, endQuote)
+  if endQuote == -1:
+    endIndex = endKarat
   url = body[httpIndex:endIndex]
-  return url
+  return url, index
   
+def getCandidateNearby(body, keyword, start):
+  lower = body.lower()
+  index = lower.find(keyword,start)
+  if index == -1:
+    return None, start
+  searchArea = body[index-600:index+600]
+  for lp in linkPositives:
+    if lp in searchArea:
+      index = min(index, lower.find(lp, start))
+  httpIndex = body.find('http', index)
+  if httpIndex - index > 100:
+    return None, start
+  endKarat = body.find('>', httpIndex + 2)
+  endQuote = body.find('"', httpIndex + 2)
+  endIndex = min(endKarat, endQuote)
+  if endQuote == -1:
+    endIndex = endKarat
+  url = body[httpIndex:endIndex]
+  return url, index
   
 def getCandidates(body):
   lower = body.lower()
   length = len(lower)
   
-  candidates = set()
+  candidates = list()
+  end = lower.rfind('content-type: text/html')
+  cccc = lower.count('content-type: text/html')
+  if cccc > 1:
+    log.log('more than one text/html', cccc, lower)
+    
+  for ln in linkNearby:
+    start = lower.find('content-type')
+    while start > 5:
+      c, start = getCandidateNearby(body, ln, start)
+      if c:
+        candidates.append(c)
+      start = lower.find(ln, start+1,end)
   for lp in linkPositives:
     start = lower.find('content-type')
-    while start != -1:
-      c = getCandidate(body, lp, start)
+    while start > 5:
+      c, start = getCandidate(body, lp, start)
       if c:
-        candidates.add(c)
-      start = lower.find(lp, start+1)-3
-  return candidates
+        candidates.append(c)
+      start = lower.find(lp, start+1,end)
+  return candidates[-1:]
     
   
 def processOne(mail, i):
@@ -74,16 +110,18 @@ def processOne(mail, i):
     fromAddress = getAddress(msg)
     
     body = msg.as_string()
-    body = actual.replace('=\r\n','')
+    body = body.replace('=\r\n','')
+    body = body.replace('=3D','=')
     
     candidates = getCandidates(body)
+    log.log('candidates', candidates)
     for c in candidates:
       commit('insert into unsubs (url, email) values (%s, %s)', (c, fromAddress))
 
 def read_email_from_gmail():
   data = None
   try:
-    # login and get emails
+    log.log('login and get emails')
     mail = imaplib.IMAP4_SSL(imap)
     mail.login(address,password)
     mail.select('inbox')
@@ -100,22 +138,23 @@ def read_email_from_gmail():
   first_email_id = int(id_list[0])
   latest_email_id = int(id_list[-1])
   
-  # track read in db
-  emails = fetch('select email from read')
+  log.log('track read in db')
+  emails = fetch('select email from readmail')
   read = set()
   for e in emails:
     read.add(int(e[0]))
+  read.remove(11) # TODO remove testing
   processed = set()
   
-  # process
-  for i in range(first_email_id, latest_email_id):
-    if i in read:
+  log.log('process')
+  for i in range(first_email_id, latest_email_id+1):
+    if int(i) in read:
       continue
     processOne(mail, i)
     processed.add(i)
   
-  # write read in db
+  log.log('write read in db')
   for i in processed:
-    commit('insert into read (email) values (%s)', i)
+    commit('insert into readmail (email) values (%s)', i)
     
 #read_email_from_gmail()
