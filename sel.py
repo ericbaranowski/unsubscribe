@@ -20,7 +20,7 @@ import log
 
 from selenium.webdriver.common.keys import Keys
 delay = .5
-pageDelay = 2
+pageDelay = 3
 
 checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out']
@@ -32,6 +32,7 @@ def GetBrowser():
 	display = Display(visible=0, size=(800, 600))
 	display.start()
 	browser = webdriver.Firefox()
+  browser.implicitly_wait(.1)
 	log.log('got browser')
 	return browser
 	

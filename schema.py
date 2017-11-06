@@ -5,3 +5,7 @@ def setup():
     url VARCHAR(10000), \
     email VARCHAR(150), \
     PRIMARY KEY (id))''')
+    
+  commit('''CREATE TABLE read(id INT NOT NULL AUTO_INCREMENT, \
+    email INT, \
+    PRIMARY KEY (id))''')
