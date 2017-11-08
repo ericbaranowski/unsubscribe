@@ -1,0 +1,14 @@
+Forward spam emails to asdfunsubscribe@gmail.com. I automatically unsubscribe you. It's that easy.
+
+I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of "Inbox Zero" so there is no cost and no catch. See my commitment statement.
+
+Provide a free and easy to use way to improve inbox cleanliness.
+Do not store personal information longer than necessary, and never use it for personal gain.
+Provide transparency into the code (github.com/skier31415/unsubscribe) running this service. 
+Use software to unsubscribe with "best effort" quality:
+  This works for emails that have an unsubscribe link in the email, and does not require a login to the service itself (LinkedIn for example). 
+  The software follows the link in a simulated browser, fills out the form, and clicks the unsubscribe button.
+	The marketing company may send an email "Confirmed you have unsubscribed." I hate these too, but I can't prevent it.
+  I can't guarantee it will always work, but this service will almost certainly improve your inbox load.
+
+I am a former Google Engineer and current independent software contractor (linkedin.com/in/wdvorak).
