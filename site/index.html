@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>ASDF Unsubscribe</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
 
-    body,h1 {
+
+    body {
       font-family: "Raleway", sans-serif;
       overflow-wrap: break-word;
+      text-align: justify;
     }
     
-    /* Set black background color, white text and some padding */
-    footer {
-      background-color: #B8DD9F;
-      color: white;
-      padding: 15px;
-    }
 
     img {
       width: 75%;
@@ -26,44 +24,78 @@
       margin: 0 auto 20px;
       padding: 10px;
     }
+    /*
+    green #B8DD9F
+    yellow #F7EF99
+    */
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {
+    }
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 100%;
+      background-color: #f1f1f1;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 25px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 25px;
+      }
+      .row.content {height:auto;} 
+    }
   </style>
 </head>
 <body>
 
-<div class="w3-sidebar w3-bar-block" style="width:25%; background-color: #F7EF99;">
+  
+<div class="container-fluid text-center">    
+  <div class="row content">
+    <div class="col-sm-2 sidenav"  style="background-color: #B8DD9F">
+    </div>
+    <div class="col-sm-8 text-left"> 
+      
+      <br/>
+      <h1 style="text-align:center;">asdfunsubscribe</h1>
+          <img src="inboxzero.png" />
+          <hr style="margin:auto;width:45%">
+          <h3 style="text-align:center;">Forward spam emails to asdfunsubscribe@gmail.com.</h3>
+          <hr style="margin:auto;width:45%">
+          <h3 style="text-align:center;">I automatically unsubscribe you. It's that easy.</h3>
+          <hr style="margin:auto;width:45%">
+          <br/>
+          <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of Inbox Zero so there is no cost and no catch. See my commitment statement.</p>
+      <p>Provide a free and easy to use way to improve inbox cleanliness.
+      <ul><li>Do not store personal information longer than necessary, and never use it for personal gain.</li>
+        <li>Provide transparency into <a href="http://github.com/skier31415/unsubscribe">the code</a> running this service.</li> 
+      <li>Use software to unsubscribe with "best effort" quality:
+      <ul><li>This works for emails that have an unsubscribe link in the email, and does not require a login to the service itself (LinkedIn for example).</li>
+        <li>The software follows the link in a simulated browser, fills out the form, and clicks the unsubscribe button.</li>
+      	<li>The marketing company may send an email "Confirmed you have unsubscribed." I hate these too, but I can't prevent it.</li>
+        <li>I can't guarantee it will always work, but this service will almost certainly improve your inbox load.</li></li></ul></ul></p>
+
+      <p>I am a former Google Engineer and current <a href="http://linkedin.com/in/wdvorak">independent software contractor</a>.</p>
+      
+      
+    </div>
+    <div class="col-sm-2 sidenav" style="background-color: #B8DD9F">
+    </div>
+  </div>
 </div>
 
-<!-- Sidebar -->
-<div class="w3-sidebar w3-bar-block" style="width:25%;right:0; background-color: #F7EF99;">
-</div>
-
-<!-- Page Content -->
-<div style="margin-right:25%; margin-left:25%">
-
-<div class="w3-container">
-  <h1 style="text-align:center;">asdfunsubscribe</h1>
-      <img src="inboxzero.png" />
-      <hr style="margin:auto;width:45%">
-      <h2>Forward spam emails to asdfunsubscribe@gmail.com. I automatically unsubscribe you. It's that easy.</h2>
-      <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of "Inbox Zero" so there is no cost and no catch. See my commitment statement.</p>
-  <p>Provide a free and easy to use way to improve inbox cleanliness.
-  <ul><li>Do not store personal information longer than necessary, and never use it for personal gain.</li>
-    <li>Provide transparency into the code (github.com/skier31415/unsubscribe) running this service.</li> 
-  <li>Use software to unsubscribe with "best effort" quality:
-  <ul><li>This works for emails that have an unsubscribe link in the email, and does not require a login to the service itself (LinkedIn for example).</li>
-    <li>The software follows the link in a simulated browser, fills out the form, and clicks the unsubscribe button.</li>
-  	<li>The marketing company may send an email "Confirmed you have unsubscribed." I hate these too, but I can't prevent it.</li>
-    <li>I can't guarantee it will always work, but this service will almost certainly improve your inbox load.</li></li></ul></ul></p>
-
-  <p>I am a former Google Engineer and current independent software contractor (linkedin.com/in/wdvorak).</p>
-</div>
-
-</div>
-
-
-<footer class="container-fluid text-center">
+<footer class="container-fluid text-center" >
   <p>Enjoy!</p>
 </footer>
-      
+
 </body>
 </html>
