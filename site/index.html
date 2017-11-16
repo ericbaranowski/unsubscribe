@@ -1,41 +1,69 @@
 <!DOCTYPE html>
 <html>
-<title>ASDF Unsubscribe</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <title>ASDF Unsubscribe</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<style>
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-    background-color: #F8DE7E;
-    min-height: 100%;
-    background-position: center;
-    background-size: cover;
-}
-</style>
+  <style>
+
+    body,h1 {
+      font-family: "Raleway", sans-serif;
+      overflow-wrap: break-word;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #B8DD9F;
+      color: white;
+      padding: 15px;
+    }
+
+    img {
+      width: 75%;
+      max-width: 170px;
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px;
+    }
+  </style>
+</head>
 <body>
 
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-  <img class="w3-display-middle" style="display:block;" src="inboxzero.png" />
-  <div class="w3-display-middle">
-    <h1 class="w3-jumbo w3-animate-top" style="text-align:center;">asdfunsubscribe</h1>
-    <hr class="w3-border-grey" style="margin:auto;width:40%">
-    <h2 class="w3-large w3-center">Forward spam emails to asdfunsubscribe@gmail.com. I automatically unsubscribe you. It's that easy.</h2>
-    <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of "Inbox Zero" so there is no cost and no catch. See my commitment statement.</p>
-<p>Provide a free and easy to use way to improve inbox cleanliness.
-<ul><li>Do not store personal information longer than necessary, and never use it for personal gain.</li>
-  <li>Provide transparency into the code (github.com/skier31415/unsubscribe) running this service.</li> 
-<li>Use software to unsubscribe with "best effort" quality:
-<ul><li>This works for emails that have an unsubscribe link in the email, and does not require a login to the service itself (LinkedIn for example).</li>
-  <li>The software follows the link in a simulated browser, fills out the form, and clicks the unsubscribe button.</li>
-	<li>The marketing company may send an email "Confirmed you have unsubscribed." I hate these too, but I can't prevent it.</li>
-  <li>I can't guarantee it will always work, but this service will almost certainly improve your inbox load.</li></ul></p>
-
-<p>I am a former Google Engineer and current independent software contractor (linkedin.com/in/wdvorak).</p>
-  </div>
+<div class="w3-sidebar w3-bar-block" style="width:25%; background-color: #F7EF99;">
 </div>
 
+<!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block" style="width:25%;right:0; background-color: #F7EF99;">
+</div>
+
+<!-- Page Content -->
+<div style="margin-right:25%; margin-left:25%">
+
+<div class="w3-container">
+  <h1 style="text-align:center;">asdfunsubscribe</h1>
+      <img src="inboxzero.png" />
+      <hr style="margin:auto;width:45%">
+      <h2>Forward spam emails to asdfunsubscribe@gmail.com. I automatically unsubscribe you. It's that easy.</h2>
+      <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of "Inbox Zero" so there is no cost and no catch. See my commitment statement.</p>
+  <p>Provide a free and easy to use way to improve inbox cleanliness.
+  <ul><li>Do not store personal information longer than necessary, and never use it for personal gain.</li>
+    <li>Provide transparency into the code (github.com/skier31415/unsubscribe) running this service.</li> 
+  <li>Use software to unsubscribe with "best effort" quality:
+  <ul><li>This works for emails that have an unsubscribe link in the email, and does not require a login to the service itself (LinkedIn for example).</li>
+    <li>The software follows the link in a simulated browser, fills out the form, and clicks the unsubscribe button.</li>
+  	<li>The marketing company may send an email "Confirmed you have unsubscribed." I hate these too, but I can't prevent it.</li>
+    <li>I can't guarantee it will always work, but this service will almost certainly improve your inbox load.</li></li></ul></ul></p>
+
+  <p>I am a former Google Engineer and current independent software contractor (linkedin.com/in/wdvorak).</p>
+</div>
+
+</div>
+
+
+<footer class="container-fluid text-center">
+  <p>Enjoy!</p>
+</footer>
+      
 </body>
 </html>
