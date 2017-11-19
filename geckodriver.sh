@@ -10,7 +10,6 @@
 #chmod +x /app/chromedriver
 
 
-apt-get install -y tar
 wget -N https://github.com/mozilla/geckodriver/releases/download/v0.16.0/geckodriver-v0.16.0-linux64.tar.gz -P /app/
 
 tar -xvzf /app/geckodriver-v0.16.0-linux64.tar.gz

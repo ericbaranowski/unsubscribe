@@ -1,10 +1,9 @@
 abstract away error handling
 handle specific errors
 
-build website and buy domain
-
 --
 delete emails
 inplicit delays
 commitment statement
 test all other email samples
+build website and buy domain

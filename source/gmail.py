@@ -4,6 +4,9 @@ import imaplib
 from sql import commit
 from sql import fetch
 import log
+import time
+import imaplib
+import email
 
 f = open('/auth/gmail.txt')
 both = f.read().split('\n')
@@ -11,11 +14,7 @@ f.close()
 address = both[0]
 password = both[1]
 imap = "imap.gmail.com"
-port   = 993
-
-import time
-import imaplib
-import email
+port = 993
 
 linkPositives = ['unsubscribe', 'remove', 'stop receiv']
 linkNearby = ['click here']
@@ -118,7 +117,7 @@ def processOne(mail, i):
     for c in candidates:
       commit('insert into unsubs (url, email) values (%s, %s)', (c, fromAddress))
 
-def read_email_from_gmail():
+def readEmailFromGmail():
   data = None
   try:
     log.log('login and get emails')
@@ -157,4 +156,4 @@ def read_email_from_gmail():
   for i in processed:
     commit('insert into readmail (email) values (%s)', i)
     
-#read_email_from_gmail()
+#readEmailFromGmail()

@@ -1,11 +1,11 @@
 
-path = '/Users/williamdvorak/Desktop/unsubscribe/git/'
+#path = '/Users/williamdvorak/Desktop/unsubscribe/git/'
 
 #import sys
 #sys.path.insert(0, path)
 ##print sys.path
-import os
-os.environ["PATH"] += os.pathsep +  path
+#import os
+#os.environ["PATH"] += os.pathsep +  path
 
 import time
 from pyvirtualdisplay import Display
@@ -18,7 +18,7 @@ import log
 
 from selenium.webdriver.common.keys import Keys
 delay = .5
-pageDelay = 6
+pageDelay = 5
 
 checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update']
@@ -28,7 +28,7 @@ shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 
 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
-def GetBrowser():
+def getBrowser():
   log.log('getting browser')
   display = Display(visible=0, size=(80, 60))
   display.start()
@@ -36,14 +36,17 @@ def GetBrowser():
   #browser.implicitly_wait(1)
   log.log('got browser')
   return browser
-  
-def ProcessPage(unsub, browser):
+
+def getPageBody(browser):
+  return browser.execute_script(js_code)
+
+def processPage(unsub, browser):
   browser = process(unsub, browser)
   if browser == 'done':
     return True
   if browser:
     time.sleep(pageDelay)
-    body = browser.execute_script(js_code)
+    body = getPageBody(browser)
     if not body:
       return False
       
@@ -91,7 +94,7 @@ def process(unsub, browser):
   #log.log(your_elements)
   #log.log(dir(browser))
   #log.log(browser.current_url)
-  body = browser.execute_script(js_code)
+  body = getPageBody(browser)
   body = body.lower()
   if any(pos in body for pos in shortConfirmPositives):
     return 'done'
@@ -304,7 +307,13 @@ def clickRecursive(elem):
       log.log('exception', e)
   return False
 
-def CheckBrowser(browser):
-  return True
+def refreshBrowser(browser):
+  browser.get('https://www.google.com/search?q=check+browser')
+  time.sleep(pageDelay)
+  body = getPageBody(browser).lower()
+  if 'whatsmybrowser.org' not in body:
+    browser = getBrowser()
+  return browser
+  
             
   

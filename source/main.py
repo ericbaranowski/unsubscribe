@@ -28,7 +28,7 @@ def handleDB():
   log.log(ll)
   if not ll:
     return
-  browser = selenium.GetBrowser()
+  browser = selenium.getBrowser()
   for uns in ll:
     log.log(uns)
     res = unsubscribe(uns, browser)
@@ -38,18 +38,17 @@ def handleDB():
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
     deleteEntry(uns)
-    if not selenium.CheckBrowser(browser):
-      browser = selenium.GetBrowser()
+    browser = selenium.refreshBrowser(browser):
 
 def unsubscribe(unsub, browser):
-  return selenium.ProcessPage(unsub,browser)
+  return selenium.processPage(unsub,browser)
   
 def main(wipe=False):
   if wipe:
     schema.wipe()
   #commit('delete from unsubs where true')
-  #gmail.read_email_from_gmail()
-  #browser = selenium.GetBrowser()
+  #gmail.readEmailFromGmail()
+  #browser = selenium.getBrowser()
   #uns = UnSub('http://click.lyftmail.com/unsub_center.aspx?qs=da6bddaa337452c8861ca82f0125d1a97b5ca3e1797ce5cf1754ceb6de34f4221ad2231ac40b5b7d284f2d927b01b574869c6d3fdcde9361a2736ce552288b28d7c6704f16852dbc', 'william.k.dvorak@gmail.com')
   #commit('insert into unsubs (url, email) values (%s, %s)', (uns.url, uns.email))
   #print unsubscribe(uns, browser)
@@ -58,7 +57,7 @@ def main(wipe=False):
   while True:
     log.log('reading email')
     try:
-      gmail.read_email_from_gmail()
+      gmail.readEmailFromGmail()
     except Exception as e:
       log.log('exception', e)
     log.log('handling unsubs')
