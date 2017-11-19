@@ -23,8 +23,9 @@ def refreshList():
 def deleteEntry(unsub):
   commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
   
-def handleDB():
-  ll = refreshList()
+def handleDB(ll):
+  if not ll:
+    ll = refreshList()
   log.log(ll)
   if not ll:
     return
@@ -38,7 +39,7 @@ def handleDB():
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
     deleteEntry(uns)
-    browser = selenium.refreshBrowser(browser):
+    browser = selenium.refreshBrowser(browser)
 
 def unsubscribe(unsub, browser):
   return selenium.processPage(unsub,browser)
@@ -56,8 +57,9 @@ def main(wipe=False):
   
   while True:
     log.log('reading email')
+    uss = None
     try:
-      gmail.readEmailFromGmail()
+      uss = gmail.readEmailFromGmail()
     except Exception as e:
       log.log('exception', e)
     log.log('handling unsubs')
@@ -66,7 +68,7 @@ def main(wipe=False):
     results = fetch('select * from readmail')
     log.log(results)
     try:
-      handleDB()
+      handleDB(uss)
     except Exception as e:
       log.log('exception', e)
     time.sleep(5)

@@ -19,6 +19,13 @@ port = 993
 linkPositives = ['unsubscribe', 'remove', 'stop receiv']
 linkNearby = ['click here']
 
+class UnSub:
+  def __init__(self, url, email):
+    self.url = url
+    self.email = email
+  def __repr__(self):
+    return self.url + "  " + self.email
+
 def writeFile(s):
   f = open('email.html','w')
   f.write(s)
@@ -114,14 +121,18 @@ def processOne(mail, i):
     
     candidates = getCandidates(body)
     log.log('candidates', candidates)
+    ccs = list()
     for c in candidates:
       commit('insert into unsubs (url, email) values (%s, %s)', (c, fromAddress))
+      ccs.append(UnSub(c, fromAddress))
+    return ccs
 
 def readEmailFromGmail():
   data = None
   try:
     log.log('login and get emails')
     mail = imaplib.IMAP4_SSL(imap)
+    print address, password
     mail.login(address,password)
     mail.select('inbox')
 
@@ -142,18 +153,20 @@ def readEmailFromGmail():
   read = set()
   for e in emails:
     read.add(int(e[0]))
-  read.remove(11) # TODO remove testing
   processed = set()
   
   log.log('process')
+  uss = list()
   for i in range(first_email_id, latest_email_id+1):
     if int(i) in read:
       continue
-    processOne(mail, i)
+    candidates = processOne(mail, i)
+    uss.extend(candidates)
     processed.add(i)
   
   log.log('write read in db')
   for i in processed:
     commit('insert into readmail (email) values (%s)', i)
+  return uss
     
 #readEmailFromGmail()

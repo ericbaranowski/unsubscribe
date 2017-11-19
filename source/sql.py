@@ -1,22 +1,18 @@
-import MySQLdb as mdb
 import log
-import time
-
-CLOUDSQL_PROJECT = 'dht-2718'
-
-CLOUDSQL_INSTANCE = 'main3'
-CLOUDSQL_IP = '104.196.149.73'
-
-
-
-f = open('/auth/sql.txt')
-
-lines = f.readlines()
-f.close()
-user = lines[0][:-1]
-password = lines[1][:-1]
 
 con = None
+local = True
+
+if not local:
+  import MySQLdb as mdb
+  import time
+
+  f = open('/auth/sql.txt')
+  lines = f.readlines()
+  f.close()
+  user = lines[0][:-1]
+  password = lines[1][:-1]
+  ip = lines[2][:-1]
 
 def closeDB():
   con.close()
@@ -24,7 +20,7 @@ def closeDB():
 def resetCon():
   global con
   time.sleep(.5)
-  con = mdb.connect(CLOUDSQL_IP, user, password, 'unsubscribe')
+  con = mdb.connect(ip, user, password, 'unsubscribe')
   con.charset='utf8'
 
 def fetch(query, ps=None, tryNum=0):
@@ -99,5 +95,5 @@ def commit(query, ps=None, tryNum=0):
       return commit(query, params, tryNum+1)
   return False
   
-  
-resetCon()
+if not local:
+  resetCon()
