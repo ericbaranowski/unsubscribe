@@ -1,6 +1,8 @@
 abstract away error handling
 handle specific errors
 
+tooltip on click
+
 --
 delete emails
 inplicit delays
