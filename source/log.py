@@ -6,6 +6,7 @@ cloudLog = True
 
 
 if cloudLog:
+  bucket = 'main'
   logging_client = logging.Client('hosting-2718')
   logger = logging_client.logger(bucket)
 

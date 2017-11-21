@@ -71,7 +71,7 @@ def main(wipe=False):
       handleDB(uss)
     except Exception as e:
       log.log('exception', e)
-    time.sleep(5)
+    time.sleep(5*60)
     
 main()
 
