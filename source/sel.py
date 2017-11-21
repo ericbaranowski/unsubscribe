@@ -91,9 +91,6 @@ def process(unsub, browser):
   browser.get(url)
   time.sleep(pageDelay)
   
-  #log.log(your_elements)
-  #log.log(dir(browser))
-  #log.log(browser.current_url)
   body = getPageBody(browser)
   body = body.lower()
   if any(pos in body for pos in shortConfirmPositives):
@@ -113,8 +110,20 @@ def process(unsub, browser):
   time.sleep(pageDelay)
   ans = processFrame(browser)
   return ans
+  
+def doFun(fun, args=None):
+  try:
+    if not args:
+      fun()
+      return True
+    if args:
+      fun(args)
+      return True
+  except Exception as e:
+    log.log('exception', e)
+  return False
 
-def processFrame(browser):
+def selects(browser):
   selects = browser.find_elements_by_xpath("//select")
   for select in selects:
     children = select.find_elements_by_xpath("./option")
@@ -122,18 +131,13 @@ def processFrame(browser):
     for child in children:
       text = getText(child)
       if any(pos in text for pos in radioPositives):
-        try:
-          child.click()
+        if doFun(child.click):
           clicked = True
-        except Exception as e:
-          log.log('exception', e)
     if not clicked and children:
-      try:
-        children[-1].click() # click the last option, usually unsub all
+      if doFun(children[-1].click): # click the last option, usually unsub all
         log.log('clicked select defaulted last')
-      except Exception as e:
-        log.log('exception', e)
-  
+
+def radios(browser):
   lists = []
   radios = browser.find_elements_by_xpath("//input[contains(@type, 'radio')]")
   currentList = []
@@ -154,89 +158,14 @@ def processFrame(browser):
     for radio in l:
       text = getText(radio)
       if any(pos in text for pos in radioPositives):
-        try:
-          radio.click()
+        if doFun(radio.click):
           clicked = True
           log.log('clicked radio')
-        except Exception as e:
-          log.log('exception', e)
     if not clicked and l:
-      try:
-        l[-1].click() # click the last option, usually unsub all
-        log.log('clicked radio defaulted last')
-      except Exception as e:
-        log.log('exception', e)
-        
-  forms = browser.find_elements_by_xpath("//form")
-  forms = reversed(forms)  
-  
-  for form in forms:
-    children = form.find_elements_by_xpath(".//*")
-    for child in children:
-      text = getText(child)
-      if not child.is_displayed() or not child.is_enabled():
-        continue
-      log.log('bllllahh',child.tag_name, text, child.get_attribute('type'))  
-      if child.tag_name == "input":
-        if child.get_attribute('type') == "text":
-          try:
-            child.clear()
-            child.send_keys(email)
-          except Exception as e:
-            log.log('exception', e)
-          continue
-        if not text:
-          continue
-        if child.get_attribute('type') == "checkbox":
-          if any(pos in text for pos in checkboxPositives) and not child.is_selected():
-            try:
-              child.click()
-            except Exception as e:
-              log.log('exception', e)
-          continue
-        if child.get_attribute('type') == "button" and any(pos in text for pos in buttonPositives):
-          time.sleep(delay)
-          try:
-            child.submit()
-            return browser
-          except Exception as e:
-            log.log('exception', e)
-          continue
-        if child.get_attribute('type') == "image" and any(pos in text for pos in buttonPositives):
-          time.sleep(delay)
-          try:
-            child.submit()
-            return browser
-          except Exception as e:
-            log.log('exception', e)
-          continue
-        if child.get_attribute('type') == "submit" and any(pos in text for pos in buttonPositives):
-          time.sleep(delay)
-          try:
-            child.submit()
-            return browser
-          except Exception as e:
-            log.log('exception', e)
-            return browser
-          continue
-      if not text:
-        continue
-      if child.tag_name == "button" and any(pos in text for pos in buttonPositives):
-        time.sleep(delay)
-        try:
-          child.submit()
-          return browser
-        except Exception as e:
-          log.log('exception', e)
-        continue
-      if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
-        time.sleep(delay)
-        try:
-          child.submit()
-          return browser
-        except Exception as e:
-          log.log('exception', e)
-        continue
+        if doFun(l[-1].click): # click the last option, usually unsub all
+          log.log('clicked radio defaulted last')
+
+def ass(browser):
   aTags = browser.find_elements_by_xpath("//a")
   aTags = reversed(aTags)
   for aTag in aTags:
@@ -248,11 +177,11 @@ def processFrame(browser):
     log.log('bllllahh',aTag.tag_name, text, aTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
-      try:
-        aTag.submit()
+      if doFun(aTag.submit):
         return browser
-      except Exception as e:
-        log.log('exception', e)
+  return None
+
+def buttons(browser):
   buttonTags = browser.find_elements_by_xpath("//button")
   buttonTags = reversed(buttonTags)
   for buttonTag in buttonTags:
@@ -264,11 +193,11 @@ def processFrame(browser):
     log.log('bllllahh',buttonTag.tag_name, text, buttonTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
-      try:
-        buttonTag.click()
+      if doFun(buttonTag.click):
         return browser
-      except Exception as e:
-        log.log('exception', e)
+  return None
+
+def onclicks(browser):
   clickTags = browser.find_elements_by_xpath("//*[@onclick]")
   clickTags = reversed(clickTags)
   for clickTag in clickTags:
@@ -283,6 +212,65 @@ def processFrame(browser):
       jss = clickTag.get_attribute('onclick')
       browser.execute_script(jss)
       return browser
+  return None
+
+def forms(browser):
+  forms = browser.find_elements_by_xpath("//form")
+  forms = reversed(forms)  
+  
+  for form in forms:
+    children = form.find_elements_by_xpath(".//*")
+    for child in children:
+      text = getText(child)
+      if not child.is_displayed() or not child.is_enabled():
+        continue
+      log.log('bllllahh',child.tag_name, text, child.get_attribute('type'))  
+      if child.tag_name == "input":
+        if child.get_attribute('type') == "text":
+          doFun(child.clear)
+          doFun(child.send_keys,email)
+          continue
+        if not text:
+          continue
+        if child.get_attribute('type') == "checkbox":
+          if any(pos in text for pos in checkboxPositives) and not child.is_selected():
+            doFun(child.click)
+          continue
+        if child.get_attribute('type') == "button" and any(pos in text for pos in buttonPositives):
+          time.sleep(delay)
+          if doFun(child.submit):
+            return browser
+          continue
+        if child.get_attribute('type') == "image" and any(pos in text for pos in buttonPositives):
+          time.sleep(delay)
+          if doFun(child.submit)
+            return browser
+          continue
+        if child.get_attribute('type') == "submit" and any(pos in text for pos in buttonPositives):
+          time.sleep(delay)
+          doFun(child.submit)
+          return browser
+      if not text:
+        continue
+      if child.tag_name == "button" and any(pos in text for pos in buttonPositives):
+        time.sleep(delay)
+        if doFun(child.submit)
+          return browser
+        continue
+      if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
+        time.sleep(delay)
+        if doFun(child.submit):
+          return browser
+        continue
+  return None
+
+def processFrame(browser):  
+  funs = [forms, ass, buttons, onclicks]
+  for ff in funs:
+    result = ff(browser)
+    if result:
+      return browser
+    
   return None
 
 def subbbmit():
@@ -300,11 +288,7 @@ def clickRecursive(elem):
   children = [elem] + children
   for child in children:
     log.log(child.tag_name, getText(child))
-    try:
-      child.click()
-      return True
-    except Exception as e:
-      log.log('exception', e)
+    return doFun(child.click)
   return False
 
 def refreshBrowser(browser):
