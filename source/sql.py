@@ -1,7 +1,7 @@
 import log
 
 con = None
-local = True
+local = False
 
 if not local:
   import MySQLdb as mdb

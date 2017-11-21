@@ -1,5 +1,14 @@
-#from gcloud import logging
+from google.cloud import logging
+
 import sys
+
+cloudLog = True
+
+
+if cloudLog:
+  logging_client = logging.Client('consulting-2718')
+  logger = logging_client.logger(bucket)
+
 
 def log(*entry):
   e = entry
@@ -8,6 +17,8 @@ def log(*entry):
   except:
     e = entry
   try:
+    if cloudLog:
+      logger.log_text(e)
     print >> sys.stderr, str(e.decode('utf-8', 'replace'))
   except Exception as e:
     print e

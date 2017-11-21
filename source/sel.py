@@ -243,7 +243,7 @@ def forms(browser):
           continue
         if child.get_attribute('type') == "image" and any(pos in text for pos in buttonPositives):
           time.sleep(delay)
-          if doFun(child.submit)
+          if doFun(child.submit):
             return browser
           continue
         if child.get_attribute('type') == "submit" and any(pos in text for pos in buttonPositives):
@@ -254,7 +254,7 @@ def forms(browser):
         continue
       if child.tag_name == "button" and any(pos in text for pos in buttonPositives):
         time.sleep(delay)
-        if doFun(child.submit)
+        if doFun(child.submit):
           return browser
         continue
       if child.tag_name == "a" and any(pos in text for pos in buttonPositives):

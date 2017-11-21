@@ -15,11 +15,6 @@ RUN apt-get install -y --fix-missing tar
 #libglib2.0-0 libxi6 libgconf-2-4 ibglib2.0-0 libxss1 libgconf-2-4 libnss3 libfontconfig libX11.6 
 
 
-
-RUN pip install --upgrade pip
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
-
 WORKDIR /app
 
 ENV PATH="/app:${PATH}"
@@ -27,6 +22,11 @@ ENV PATH="/app:${PATH}"
 # move above pip
 COPY geckodriver.sh /app/geckodriver.sh
 RUN sh /app/geckodriver.sh
+
+RUN pip install --upgrade pip
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+
 
 
 COPY source/ /app/
