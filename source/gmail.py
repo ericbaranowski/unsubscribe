@@ -146,6 +146,7 @@ def readEmailFromGmail():
     return
     
   mail_ids = data[0]
+  log.log('mailidssssss' + str(mail_ids))
   id_list = mail_ids.split()   
   first_email_id = int(id_list[0])
   latest_email_id = int(id_list[-1])
