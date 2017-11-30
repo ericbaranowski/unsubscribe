@@ -102,7 +102,7 @@ def process(unsub, browser):
     log.log('next frame')
     browser.switch_to.frame(frame)
     time.sleep(pageDelay)
-    ans = processFrame(browser)
+    ans = processFrame(browser, email)
     if ans:
       return ans
   log.log('main frame')
@@ -165,7 +165,7 @@ def radios(browser):
         if doFun(l[-1].click): # click the last option, usually unsub all
           log.log('clicked radio defaulted last')
 
-def ass(browser):
+def ass(browser, unused):
   aTags = browser.find_elements_by_xpath("//a")
   aTags = reversed(aTags)
   for aTag in aTags:
@@ -181,7 +181,7 @@ def ass(browser):
         return browser
   return None
 
-def buttons(browser):
+def buttons(browser, unused):
   buttonTags = browser.find_elements_by_xpath("//button")
   buttonTags = reversed(buttonTags)
   for buttonTag in buttonTags:
@@ -197,7 +197,7 @@ def buttons(browser):
         return browser
   return None
 
-def onclicks(browser):
+def onclicks(browser, unused):
   clickTags = browser.find_elements_by_xpath("//*[@onclick]")
   clickTags = reversed(clickTags)
   for clickTag in clickTags:
@@ -214,7 +214,7 @@ def onclicks(browser):
       return browser
   return None
 
-def forms(browser):
+def forms(browser, email):
   forms = browser.find_elements_by_xpath("//form")
   forms = reversed(forms)  
   
@@ -264,10 +264,10 @@ def forms(browser):
         continue
   return None
 
-def processFrame(browser):  
+def processFrame(browser, email):  
   funs = [forms, ass, buttons, onclicks]
   for ff in funs:
-    result = ff(browser)
+    result = ff(browser, email)
     if result:
       return browser
     
