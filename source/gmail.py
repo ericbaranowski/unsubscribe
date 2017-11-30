@@ -135,8 +135,10 @@ def readEmailFromGmail():
     print address, password
     mail.login(address,password)
     mail.select('inbox')
-
-    unused, data = mail.search(None, 'ALL')
+    now = datetime.datetime.now().strftime('%d-%b-%Y')
+    if now[0] == '0':
+      now = now[1:]
+    unused, data = mail.search(None, '(SINCE %s)' % now)
   except Exception as e:
     log.log(e)
     

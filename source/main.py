@@ -5,6 +5,8 @@ import sel as selenium
 import gmail
 import schema
 import log
+import hashlib
+import datetime
 
 class UnSub:
   def __init__(self, url, email):
@@ -19,6 +21,22 @@ def refreshList():
   for r in results:
     l.append(UnSub(r[0], r[1]))
   return l
+  
+def addEmailToSqlAnalytics(email, success=False):
+  table = 'emailhashestotal'
+  if success:
+    table = 'emailhashespositive'
+    
+  email = email.lower()
+  m = hashlib.sha256()
+  m.update(email)
+  digest = m.hexdigest()
+  now = str(datetime.datetime.now())
+  results = fetch('select stamp from %s where hash=%s', (table, digest))
+  if results:
+    commit('update %s set stamp=%s where hash=%s', (table, now, digest))
+  else:
+    commit('insert into %s (hash, stamp) values (%s, %s)', (table, digest, now))
   
 def deleteEntry(unsub):
   commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
@@ -35,9 +53,11 @@ def handleDB(ll):
     res = unsubscribe(uns, browser)
     if not res:
       log.log('failed confirmation', uns)
+      addEmailToSqlAnalytics(uns.email)
     else:
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
+      addEmailToSqlAnalytics(uns.email,True)
     deleteEntry(uns)
     browser = selenium.refreshBrowser(browser)
 
