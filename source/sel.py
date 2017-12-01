@@ -270,7 +270,11 @@ def forms(browser, email):
 def processFrame(browser, email):  
   funs = [forms, ass, buttons, onclicks]
   for ff in funs:
-    result = ff(browser, email)
+    result = None
+    try:
+      result = ff(browser, email)
+    except Exception as e:
+      log.log('exception', e)
     if result:
       return browser
     
