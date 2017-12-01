@@ -2,7 +2,7 @@ from google.cloud import logging
 
 import sys
 
-cloudLog = True
+cloudLog = False
 
 
 if cloudLog:

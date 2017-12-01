@@ -26,17 +26,16 @@ def addEmailToSqlAnalytics(email, success=False):
   table = 'emailhashestotal'
   if success:
     table = 'emailhashespositive'
-    
   email = email.lower()
   m = hashlib.sha256()
   m.update(email)
   digest = m.hexdigest()
   now = str(datetime.datetime.now())
-  results = fetch('select stamp from %s where hash=%s', (table, digest))
+  results = fetch('select stamp from '+table+' where hash=%s', (digest))
   if results:
-    commit('update %s set stamp=%s where hash=%s', (table, now, digest))
+    commit('update '+table+' set stamp=%s where hash=%s', (now, digest))
   else:
-    commit('insert into %s (hash, stamp) values (%s, %s)', (table, digest, now))
+    commit('insert into '+table+' (hash, stamp) values (%s, %s)', (digest, now))
   
 def deleteEntry(unsub):
   commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
@@ -91,9 +90,9 @@ def main(wipe=False):
       handleDB(uss)
     except Exception as e:
       log.log('exception', e)
-    time.sleep(5*60)
+    time.sleep(10)
     
-main()
+main(True)
 
 #todo
 #get email from account, add links to queue

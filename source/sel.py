@@ -50,7 +50,7 @@ def processPage(unsub, browser):
     if not body:
       return False
       
-    log.log('got result', body)
+    #log.log('got result', body)
     body = body.lower()
     if  any(pos in body for pos in confirmPositives):
       return True
@@ -95,7 +95,14 @@ def process(unsub, browser):
   body = body.lower()
   if any(pos in body for pos in shortConfirmPositives):
     return 'done'
-  
+
+  log.log('main frame')
+  ans = processFrame(browser, email)
+  if ans:
+    return ans
+
+  browser.get(url)
+  time.sleep(pageDelay)
   frames = browser.find_elements_by_tag_name('iframe')
   frames = reversed(frames)
   for frame in frames:
@@ -105,10 +112,6 @@ def process(unsub, browser):
     ans = processFrame(browser, email)
     if ans:
       return ans
-  log.log('main frame')
-  browser.get(url)
-  time.sleep(pageDelay)
-  ans = processFrame(browser)
   return ans
   
 def doFun(fun, args=None):

@@ -7,6 +7,8 @@ import log
 import time
 import imaplib
 import email
+import datetime
+from datetime import timedelta
 
 f = open('/auth/gmail.txt')
 both = f.read().split('\n')
@@ -135,18 +137,22 @@ def readEmailFromGmail():
     print address, password
     mail.login(address,password)
     mail.select('inbox')
-    now = datetime.datetime.now().strftime('%d-%b-%Y')
+    now = (datetime.datetime.now()-timedelta(days=1)).strftime('%d-%b-%Y')
     if now[0] == '0':
       now = now[1:]
+    log.log('(SINCE %s)' % now)
     unused, data = mail.search(None, '(SINCE %s)' % now)
   except Exception as e:
     log.log(e)
     
   if not data:
     return
-    
+
+  uss = list()
   mail_ids = data[0]
-  log.log('mailidssssss' + str(mail_ids))
+  
+  if not mail_ids:
+    return uss
   id_list = mail_ids.split()   
   first_email_id = int(id_list[0])
   latest_email_id = int(id_list[-1])
@@ -159,10 +165,10 @@ def readEmailFromGmail():
   processed = set()
   
   log.log('process')
-  uss = list()
   for i in range(first_email_id, latest_email_id+1):
     if int(i) in read:
-      continue
+      pass # process read email during testing TODO(wdvorak) remove this line
+      #continue
     candidates = processOne(mail, i)
     uss.extend(candidates)
     processed.add(i)
