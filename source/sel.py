@@ -41,20 +41,24 @@ def getPageBody(browser):
   return browser.execute_script(js_code)
 
 def processPage(unsub, browser):
-  browser = process(unsub, browser)
-  if browser == 'done':
-    return True
-  if browser:
-    time.sleep(pageDelay)
-    body = getPageBody(browser)
-    if not body:
-      return False
-      
-    #log.log('got result', body)
-    body = body.lower()
-    if  any(pos in body for pos in confirmPositives):
+  try:
+    browser = process(unsub, browser)
+    if browser == 'done':
       return True
-    log.log('no confirmed unsub,', body)
+    if browser:
+      time.sleep(pageDelay)
+      body = getPageBody(browser)
+      if not body:
+        return False
+      
+      #log.log('got result', body)
+      body = body.lower()
+      if  any(pos in body for pos in confirmPositives):
+        return True
+      log.log('no confirmed unsub,', body)
+    return False
+  except Exception as e:
+    log.log('exception'+ str(e))
   return False
 
 #def click(child):
@@ -104,14 +108,21 @@ def process(unsub, browser):
   browser.get(url)
   time.sleep(pageDelay)
   frames = browser.find_elements_by_tag_name('iframe')
-  frames = reversed(frames)
-  for frame in frames:
+  frames = list(reversed(frames))
+  numFrames = len(frames)
+  for i in range(numFrames):
+    frame = frames[i]
     log.log('next frame')
     browser.switch_to.frame(frame)
     time.sleep(pageDelay)
     ans = processFrame(browser, email)
     if ans:
       return ans
+    # refresh frames list
+    browser.get(url)
+    time.sleep(pageDelay)
+    frames = browser.find_elements_by_tag_name('iframe')
+    frames = list(reversed(frames))
   return ans
   
 def doFun(fun, args=None):

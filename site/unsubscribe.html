@@ -5,7 +5,34 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
+  
   <script>
+    
+    // Tooltip
+
+    $('button').tooltip({
+      trigger: 'click',
+      placement: 'bottom'
+    });
+
+    function setTooltip(btn, message) {
+      $(btn).tooltip('hide')
+        .attr('data-original-title', message)
+        .tooltip('show');
+    }
+
+    function hideTooltip(btn) {
+      setTimeout(function() {
+        $(btn).tooltip('hide');
+      }, 1000);
+    }
+    
+    
+    
     function copyTextToClipboard() {
       var textArea = document.createElement("textarea");
 
@@ -53,13 +80,17 @@
       document.body.appendChild(textArea);
 
       textArea.select();
-
+      e = document.getElementById("coppy");
       try {
         var successful = document.execCommand('copy');
         var msg = successful ? 'successful' : 'unsuccessful';
         console.log('Copying text command was ' + msg);
+      setTooltip(e, 'Email address copied!');
+      hideTooltip(e);
       } catch (err) {
-        console.log('Oops, unable to copy');
+        console.log('Unable to copy.');
+      setTooltip(e, 'Failed to copy address.');
+      hideTooltip(e);
       }
       document.body.removeChild(textArea);
     }
@@ -73,6 +104,13 @@
       font-family: "Raleway", sans-serif;
       overflow-wrap: break-word;
       text-align: justify;
+    }
+    span {
+      color: #428bca;
+    }
+    span:hover {
+      text-decoration: underline;
+      cursor: pointer;
     }
     
 
@@ -151,13 +189,13 @@
       <h1 style="text-align:center;">asdfunsubscribe</h1>
           <img src="inboxzero.png" />
           <hr style="margin:auto;width:45%">
-          <h3 style="text-align:center;">Forward spam emails to <span href="#" onclick="copyTextToClipboard(); return false;">asdfunsubscribe@gmail.com</span>.</h3>
+          <h3 style="text-align:center;">Forward spam emails to asdfunsubscribe@gmail.com</h3>
           
           <hr style="margin:auto;width:45%">
           <h3 style="text-align:center;">I automatically unsubscribe you. It's that easy.</h3>
           <hr style="margin:auto;width:45%">
           <br/>
-          <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of Inbox Zero so there is no cost and no catch. Here's my commitment statement:</p>
+          <p>I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of Inbox Zero so there is no cost and no catch. <span href="#" id="coppy" onclick="copyTextToClipboard(); return false;">Click here</span> to copy the email address. My commitment statement:</p>
       <ul><li>Provide a free and easy to use way to improve inbox cleanliness.</li>
       <li>Do not store personal information longer than necessary, and never use it for personal gain.</li>
         <li>Provide transparency into <a href="http://github.com/skier31415/unsubscribe">the code</a> running this service.</li> 

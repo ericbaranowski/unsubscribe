@@ -18,7 +18,7 @@ password = both[1]
 imap = "imap.gmail.com"
 port = 993
 
-linkPositives = ['unsubscribe', 'remove', 'stop receiv']
+linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out']
 linkNearby = ['click here']
 
 class UnSub:
@@ -167,8 +167,7 @@ def readEmailFromGmail():
   log.log('process')
   for i in range(first_email_id, latest_email_id+1):
     if int(i) in read:
-      pass # process read email during testing TODO(wdvorak) remove this line
-      #continue
+      continue
     candidates = processOne(mail, i)
     uss.extend(candidates)
     processed.add(i)

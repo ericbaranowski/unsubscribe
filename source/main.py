@@ -90,9 +90,11 @@ def main(wipe=False):
       handleDB(uss)
     except Exception as e:
       log.log('exception', e)
-    time.sleep(10)
+    sleeplen = 20
+    log.log('sleeping for '+str(sleeplen))
+    time.sleep(sleeplen)
     
-main(True)
+main()
 
 #todo
 #get email from account, add links to queue

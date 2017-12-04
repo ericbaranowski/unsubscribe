@@ -36,4 +36,5 @@ ENV PYTHONPATH /app/
 
 ENTRYPOINT ["python"]
 
+CMD ["localSql.py"]
 CMD ["main.py"]
