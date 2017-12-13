@@ -134,7 +134,6 @@ def readEmailFromGmail():
   try:
     log.log('login and get emails')
     mail = imaplib.IMAP4_SSL(imap)
-    print address, password
     mail.login(address,password)
     mail.select('inbox')
     now = (datetime.datetime.now()-timedelta(days=1)).strftime('%d-%b-%Y')

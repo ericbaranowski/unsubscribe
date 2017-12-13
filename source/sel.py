@@ -23,7 +23,7 @@ pageDelay = 5
 checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update']
 radioPositives = ['all', 'none', 'complete']
-confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated']
+confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have removed', 'request has been processed', 'request processed']
 shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 'now unsubscribed']
 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
@@ -80,6 +80,10 @@ def getText(child):
       text = text.lower()
   if not text or len(text) < 3:
     text = child.get_attribute('name')
+    if text:
+      text = text.lower()
+  if not text or len(text) < 3:
+    text = child.get_attribute('onclick')
     if text:
       text = text.lower()
   if not text or len(text) < 3:
@@ -147,11 +151,12 @@ def selects(browser):
       if any(pos in text for pos in radioPositives):
         if doFun(child.click):
           clicked = True
+          log.log('clicked select')
     if not clicked and children:
       if doFun(children[-1].click): # click the last option, usually unsub all
         log.log('clicked select defaulted last')
 
-def radios(browser):
+def radios(browser, unused):
   lists = []
   radios = browser.find_elements_by_xpath("//input[contains(@type, 'radio')]")
   currentList = []
@@ -166,12 +171,12 @@ def radios(browser):
       currentName = name
     currentList.append(radio)
   lists.append(currentList)
-  
   for l in lists:
     clicked = False
     for radio in l:
       text = getText(radio)
       if any(pos in text for pos in radioPositives):
+        log.log(text+ 'herere')
         if doFun(radio.click):
           clicked = True
           log.log('clicked radio')
@@ -188,10 +193,14 @@ def ass(browser, unused):
       continue
     if not aTag.is_displayed() or not aTag.is_enabled():
       continue
-    log.log('bllllahh',aTag.tag_name, text, aTag.get_attribute('type'))
+    log.log(aTag.tag_name, text, aTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
-      if doFun(aTag.submit):
+      funn = aTag.submit
+      if aTag.get_attribute('onclick'):
+        funn = aTag.click
+      if doFun(funn):
+        log.log('a tag submitted')
         return browser
   return None
 
@@ -204,10 +213,11 @@ def buttons(browser, unused):
       continue
     if not buttonTag.is_displayed() or not buttonTag.is_enabled():
       continue
-    log.log('bllllahh',buttonTag.tag_name, text, buttonTag.get_attribute('type'))
+    log.log(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       if doFun(buttonTag.click):
+        log.log('clicked button')
         return browser
   return None
 
@@ -220,7 +230,7 @@ def onclicks(browser, unused):
       continue
     if not clickTag.is_displayed() or not clickTag.is_enabled():
       continue
-    log.log('bllllahh',clickTag.tag_name, text, clickTag.get_attribute('type'))
+    log.log(clickTag.tag_name, text, clickTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       jss = clickTag.get_attribute('onclick')
@@ -238,7 +248,7 @@ def forms(browser, email):
       text = getText(child)
       if not child.is_displayed() or not child.is_enabled():
         continue
-      log.log('bllllahh',child.tag_name, text, child.get_attribute('type'))  
+      log.log(child.tag_name, text, child.get_attribute('type'))  
       if child.tag_name == "input":
         if child.get_attribute('type') == "text":
           doFun(child.clear)
@@ -248,7 +258,8 @@ def forms(browser, email):
           continue
         if child.get_attribute('type') == "checkbox":
           if any(pos in text for pos in checkboxPositives) and not child.is_selected():
-            doFun(child.click)
+            if doFun(child.click):
+              log.log('clicked checkbox')
           continue
         if child.get_attribute('type') == "button" and any(pos in text for pos in buttonPositives):
           time.sleep(delay)
@@ -273,13 +284,17 @@ def forms(browser, email):
         continue
       if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
         time.sleep(delay)
-        if doFun(child.submit):
+        funn = aTag.submit
+        if aTag.get_attribute('onclick'):
+          funn = aTag.click
+        if doFun(funn):
+          log.log('subbimmets a tag')
           return browser
         continue
   return None
 
 def processFrame(browser, email):  
-  funs = [forms, ass, buttons, onclicks]
+  funs = [radios, forms, ass, buttons, onclicks]
   for ff in funs:
     result = None
     try:
@@ -295,7 +310,7 @@ def subbbmit():
   submitTags = browser.find_elements_by_xpath("//*[@onsubmit]")
   submitTags = reversed(submitTags)
   for submitTag in submitTags:
-    log.log('bllllahh',submitTag.tag_name, submitTag.get_attribute('type'))
+    log.log(submitTag.tag_name, submitTag.get_attribute('type'))
     time.sleep(delay)
     jss = submitTag.get_attribute('onsubmit')
     browser.execute_script(jss)
@@ -318,4 +333,13 @@ def refreshBrowser(browser):
   return browser
   
             
+  
+''' code to consider fixing (grammerly)
+  
+  
+  <span class="_ada80c-title _ada80c-titleNormal _ada80c-pointer" data-reactid="31">Unsubscribe From All Email Lists</span><span class="_ada80c-sub _ada80c-subNormal" data-reactid="32">You will still receive important transactional and billing-related emails</span></div><div class="_74305d-button _610808-button" data-qa="btnUpdate" data-reactid="33">Update my preferences</div>
+  
+  
+'''
+  
   

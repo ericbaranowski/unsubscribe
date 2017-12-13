@@ -20,16 +20,16 @@ WORKDIR /app
 ENV PATH="/app:${PATH}"
 
 # move above pip
-COPY geckodriver.sh /app/geckodriver.sh
+COPY unsubscribe/geckodriver.sh /app/geckodriver.sh
 RUN sh /app/geckodriver.sh
 
 RUN pip install --upgrade pip
-COPY requirements.txt /app/requirements.txt
+COPY unsubscribe/requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
 
 
-COPY source/ /app/
+COPY unsubscribe/source/ /app/
 COPY auth /auth/
 
 ENV PYTHONPATH /app/
