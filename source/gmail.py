@@ -85,7 +85,7 @@ def getCandidates(body):
       if c:
         candidates.append(c)
       start = lower.find(lp, start+1,end)
-  return candidates
+  return set(candidates)
     
   
 def processOne(mail, i):
