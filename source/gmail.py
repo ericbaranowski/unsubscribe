@@ -10,8 +10,7 @@ import email
 import datetime
 from datetime import timedelta
 
-linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out']
-linkNearby = ['click here']
+linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv']
 
 class UnSub:
   def __init__(self, url, email):
@@ -79,13 +78,6 @@ def getCandidates(body):
   if cccc > 1:
     log.log('more than one text/html', cccc, lower)
     
-  for ln in linkNearby:
-    start = lower.find('content-type')
-    while start > 5:
-      c, start = getCandidateNearby(body, ln, start)
-      if c:
-        candidates.append(c)
-      start = lower.find(ln, start+1,end)
   for lp in linkPositives:
     start = lower.find('content-type')
     while start > 5:
@@ -93,7 +85,7 @@ def getCandidates(body):
       if c:
         candidates.append(c)
       start = lower.find(lp, start+1,end)
-  return candidates[-1:]
+  return candidates
     
   
 def processOne(mail, i):
