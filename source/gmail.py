@@ -122,16 +122,20 @@ def processOne(mail, i):
     return ccs
 
 def connect():
-  f = open('/auth/gmail.txt')
-  both = f.read().split('\n')
-  f.close()
-  address = both[0]
-  password = both[1]
-  imap = "imap.gmail.com"
+  mail = None
+  try:
+    f = open('/auth/gmail.txt')
+    both = f.read().split('\n')
+    f.close()
+    address = both[0]
+    password = both[1]
+    imap = "imap.gmail.com"
   
-  mail = imaplib.IMAP4_SSL(imap)
-  mail.login(address,password)
-  mail.select('inbox')
+    mail = imaplib.IMAP4_SSL(imap)
+    mail.login(address,password)
+    mail.select('inbox')
+  except Exception as e:
+    log.log('exception connecting to gmail', e)
   return mail
 
 def readEmailFromGmail(mail):

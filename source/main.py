@@ -73,11 +73,7 @@ def main(wipe=False):
   #commit('insert into unsubs (url, email) values (%s, %s)', (uns.url, uns.email))
   #print unsubscribe(uns, browser)
   #return
-  mail = None
-  try:
-    mail = gmail.connect()
-  except Exception as e:
-    log.log('exception connecting to gmail', e)
+  mail =  gmail.connect()
   it = 0
   while True:
     it += 1
@@ -87,6 +83,8 @@ def main(wipe=False):
       uss = gmail.readEmailFromGmail(mail)
     except Exception as e:
       log.log('exception', e)
+      if it % 10 == 0:
+        mail = gmail.connect()
     log.log('handling unsubs')
     results = fetch('select * from unsubs')
     log.log(results)
