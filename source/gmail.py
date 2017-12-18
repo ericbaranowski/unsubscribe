@@ -10,14 +10,6 @@ import email
 import datetime
 from datetime import timedelta
 
-f = open('/auth/gmail.txt')
-both = f.read().split('\n')
-f.close()
-address = both[0]
-password = both[1]
-imap = "imap.gmail.com"
-port = 993
-
 linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out']
 linkNearby = ['click here']
 
@@ -129,13 +121,24 @@ def processOne(mail, i):
       ccs.append(UnSub(c, fromAddress))
     return ccs
 
-def readEmailFromGmail():
+def connect():
+  f = open('/auth/gmail.txt')
+  both = f.read().split('\n')
+  f.close()
+  address = both[0]
+  password = both[1]
+  imap = "imap.gmail.com"
+  
+  mail = imaplib.IMAP4_SSL(imap)
+  mail.login(address,password)
+  mail.select('inbox')
+  return mail
+
+def readEmailFromGmail(mail):
   data = None
   try:
     log.log('login and get emails')
-    mail = imaplib.IMAP4_SSL(imap)
-    mail.login(address,password)
-    mail.select('inbox')
+    
     now = (datetime.datetime.now()-timedelta(days=1)).strftime('%d-%b-%Y')
     if now[0] == '0':
       now = now[1:]

@@ -73,12 +73,18 @@ def main(wipe=False):
   #commit('insert into unsubs (url, email) values (%s, %s)', (uns.url, uns.email))
   #print unsubscribe(uns, browser)
   #return
-  
+  mail = None
+  try:
+    mail = gmail.connect()
+  except Exception as e:
+    log.log('exception connecting to gmail', e)
+  it = 0
   while True:
+    it += 1
     log.log('reading email')
     uss = None
     try:
-      uss = gmail.readEmailFromGmail()
+      uss = gmail.readEmailFromGmail(mail)
     except Exception as e:
       log.log('exception', e)
     log.log('handling unsubs')
@@ -92,6 +98,8 @@ def main(wipe=False):
       log.log('exception', e)
     sleeplen = 20
     log.log('sleeping for '+str(sleeplen))
+    if it % 1000 == 0:
+      mail = gmail.connect()
     time.sleep(sleeplen)
     
 main()
