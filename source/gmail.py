@@ -133,7 +133,6 @@ def connect():
   
     mail = imaplib.IMAP4_SSL(imap)
     mail.login(address,password)
-    mail.select('inbox')
   except Exception as e:
     log.log('exception connecting to gmail', e)
   return mail
@@ -142,7 +141,8 @@ def readEmailFromGmail(mail):
   data = None
   try:
     log.log('login and get emails')
-    
+
+    mail.select('inbox')
     now = (datetime.datetime.now()-timedelta(days=1)).strftime('%d-%b-%Y')
     if now[0] == '0':
       now = now[1:]
