@@ -152,6 +152,7 @@ def readEmailFromGmail(mail):
     log.log(e)
     
   if not data:
+    log.log('no new emails %s', str(mail))
     return
 
   uss = list()
