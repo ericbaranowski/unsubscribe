@@ -22,20 +22,32 @@ def refreshList():
     l.append(UnSub(r[0], r[1]))
   return l
   
-def addEmailToSqlAnalytics(email, success=False):
-  table = 'emailhashestotal'
-  if success:
-    table = 'emailhashespositive'
+def anonymousAnalytics(email, table):
   email = email.lower()
   m = hashlib.sha256()
   m.update(email)
   digest = m.hexdigest()
+  
   now = str(datetime.datetime.now())
   results = fetch('select stamp from '+table+' where hash=%s', (digest))
   if results:
     commit('update '+table+' set stamp=%s where hash=%s', (now, digest))
   else:
     commit('insert into '+table+' (hash, stamp) values (%s, %s)', (digest, now))
+  
+def fullAnalytics(email, url, success):
+  s = int(success)
+  commit('insert into analytics (email, url, success) values (%s, %s, %s)', (email, url, s))
+    
+def addEmailToSqlAnalytics(email, url=None, success=False):
+  table = 'emailhashestotal'
+  anonymousAnalytics(email, table)
+  if success:
+    table = 'emailhashespositive'
+    anonymousAnalytics(email, table)
+  if url:
+    fullAnalytics(email, url, success)
+    
   
 def deleteEntry(unsub):
   commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
@@ -52,11 +64,11 @@ def handleDB(ll):
     res = unsubscribe(uns, browser)
     if not res:
       log.log('failed confirmation', uns)
-      addEmailToSqlAnalytics(uns.email)
+      addEmailToSqlAnalytics(uns.email,uns.url,False)
     else:
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
-      addEmailToSqlAnalytics(uns.email,True)
+      addEmailToSqlAnalytics(uns.email,uns.url,True)
     deleteEntry(uns)
     browser = selenium.refreshBrowser(browser)
 
@@ -74,6 +86,15 @@ def main(wipe=False):
   #print unsubscribe(uns, browser)
   #return
   mail =  gmail.connect()
+  log.log('print analytics total, successful, all broken')
+  results = fetch('select count(*) from analytics')
+  log.log(results)
+  results = fetch('select count(*) from analytics where success=1')
+  log.log(results)
+  results = fetch('select email, url from analytics where success=0')
+  log.log(results)
+  
+  
   it = 0
   while True:
     it += 1

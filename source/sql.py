@@ -36,6 +36,8 @@ def fetch(query, ps=None, tryNum=0):
       t = type(param)
       if t == str or t == unicode:
         params.append(str(param.encode('utf-8', 'replace')))
+      elif t == int or t == bool:
+        params.append(param)
       else:
         params.append(str(param))
   log.log(params)
@@ -77,6 +79,8 @@ def commit(query, ps=None, tryNum=0):
       t = type(param)
       if t == str or t == unicode:
         params.append(str(param.encode('utf-8', 'replace')))
+      elif t == int or t == bool:
+        params.append(param)
       else:
         params.append(str(param))
   if tryNum == 3:
