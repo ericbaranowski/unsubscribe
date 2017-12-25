@@ -2,6 +2,7 @@ from sql import commit
 
 def setup():
   commit('''CREATE TABLE unsubs(id INT NOT NULL AUTO_INCREMENT, \
+    hash VARCHAR(8), \
     url VARCHAR(1000), \
     email VARCHAR(150), \
     PRIMARY KEY (id))''')

@@ -9,13 +9,22 @@ import imaplib
 import email
 import datetime
 from datetime import timedelta
+import string
 
 linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv']
 
+def newHash():
+  lets = string.ascii_letters[:26] + string.digits
+  ans = ''
+  for i in range(8):
+    ans += random.choice(lets)
+  return ans
+
 class UnSub:
-  def __init__(self, url, email):
+  def __init__(self, url, email, hashh):
     self.url = url
     self.email = email
+    self.hashh = hashh
   def __repr__(self):
     return self.url + "  " + self.email
 
@@ -93,7 +102,7 @@ def processOne(mail, i):
     unused, data = mail.fetch(i, '(RFC822)' )
   except Exception as e:
     log.log(e)
-    
+  hashh = newHash()
   for response_part in data:
     if not isinstance(response_part, tuple):
       continue
@@ -109,8 +118,8 @@ def processOne(mail, i):
     log.log('candidates', candidates)
     ccs = list()
     for c in candidates:
-      commit('insert into unsubs (url, email) values (%s, %s)', (c, fromAddress))
-      ccs.append(UnSub(c, fromAddress))
+      commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
+      ccs.append(UnSub(c, fromAddress, hashh))
     return ccs
 
 def connect():

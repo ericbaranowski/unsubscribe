@@ -9,17 +9,18 @@ import hashlib
 import datetime
 
 class UnSub:
-  def __init__(self, url, email):
+  def __init__(self, url, email, hashh):
     self.url = url
     self.email = email
+    self.hashh = hashh
   def __repr__(self):
     return self.url + "  " + self.email
 
 def refreshList():
-  results = fetch('select url, email from unsubs')
+  results = fetch('select url, email, hash from unsubs')
   l = list()
   for r in results:
-    l.append(UnSub(r[0], r[1]))
+    l.append(UnSub(r[0], r[1], r[2]))
   return l
   
 def anonymousAnalytics(email, table):
@@ -49,8 +50,11 @@ def addEmailToSqlAnalytics(email, url=None, success=False):
     fullAnalytics(email, url, success)
     
   
-def deleteEntry(unsub):
-  commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
+def deleteEntry(unsub, alll=False):
+  if alll:
+    commit('delete from unsubs where hash=%s',(unsub.hashh))
+  else:
+    commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
   
 def handleDB(ll):
   if not ll:
@@ -65,11 +69,12 @@ def handleDB(ll):
     if not res:
       log.log('failed confirmation', uns)
       addEmailToSqlAnalytics(uns.email,uns.url,False)
+      deleteEntry(uns, False)
     else:
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
       addEmailToSqlAnalytics(uns.email,uns.url,True)
-    deleteEntry(uns)
+      deleteEntry(uns, True)
     browser = selenium.refreshBrowser(browser)
 
 def unsubscribe(unsub, browser):
@@ -88,11 +93,12 @@ def main(wipe=False):
   mail =  gmail.connect()
   log.log('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
-  log.log(results)
+  log.log('total', results)
   results = fetch('select count(*) from analytics where success=1')
-  log.log(results)
+  log.log('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.log(results)
+  return
   
   
   it = 0
