@@ -10,6 +10,7 @@ import email
 import datetime
 from datetime import timedelta
 import string
+import random
 
 linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv']
 

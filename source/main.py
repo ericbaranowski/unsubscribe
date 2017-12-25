@@ -98,8 +98,6 @@ def main(wipe=False):
   log.log('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.log(results)
-  return
-  
   
   it = 0
   while True:
