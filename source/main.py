@@ -132,6 +132,15 @@ def mainMaster(wipe=False):
       mail = gmail.connect()
     time.sleep(sleeplen)
     
+def printAnalytics():
+  log.log('print analytics total, successful, all broken')
+  results = fetch('select count(*) from analytics')
+  log.log('total', results)
+  results = fetch('select count(*) from analytics where success=1')
+  log.log('successful', results)
+  results = fetch('select email, url from analytics where success=0')
+  log.log(results)
+    
 def mainSlave():
   log.log('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
