@@ -22,6 +22,20 @@ def refreshList():
   for r in results:
     l.append(UnSub(r[0], r[1], r[2]))
   return l
+
+def getFive():
+  results = fetch('select url, email, hash from unsubs limit 5')
+  s = set()
+  for r in results:
+    s.add(r[2])
+  s = str(list(s)).replace('[','(').replace(']',')')
+  results = fetch('select url, email, hash from unsubs where hash in ' + s)
+  l = list()
+  for r in results:
+    l.append(UnSub(r[0], r[1], r[2]))
+  for ss in s:
+    commit('delete from unsubs where hash=%s', ss)
+  return l
   
 def anonymousAnalytics(email, table):
   email = email.lower()
@@ -57,8 +71,7 @@ def deleteEntry(unsub, alll=False):
     commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
   
 def handleDB(ll):
-  if not ll:
-    ll = refreshList()
+  ll = getFive()
   log.log(ll)
   if not ll:
     return
@@ -69,12 +82,10 @@ def handleDB(ll):
     if not res:
       log.log('failed confirmation', uns)
       addEmailToSqlAnalytics(uns.email,uns.url,False)
-      deleteEntry(uns, False)
     else:
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
       addEmailToSqlAnalytics(uns.email,uns.url,True)
-      deleteEntry(uns, True)
     browser = selenium.refreshBrowser(browser)
 
 def unsubscribe(unsub, browser):
