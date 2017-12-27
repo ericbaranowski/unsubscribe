@@ -34,7 +34,7 @@ COPY auth /auth/
 
 ENV PYTHONPATH /app/
 
-RUN echo "$(cat /app/main.py)\nmainMaster()" > /app/main.py
+RUN echo "$(cat /app/main.py)\nmainSlave()" > /app/main.py
 
 ENTRYPOINT ["python"]
 

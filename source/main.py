@@ -27,13 +27,16 @@ def getFive():
   results = fetch('select url, email, hash from unsubs limit 5')
   s = set()
   for r in results:
-    s.add(r[2])
+    s.add(str(r[2]))
+  origSet = s
+  if not s:
+    return []
   s = str(list(s)).replace('[','(').replace(']',')')
   results = fetch('select url, email, hash from unsubs where hash in ' + s)
   l = list()
   for r in results:
     l.append(UnSub(r[0], r[1], r[2]))
-  for ss in s:
+  for ss in origSet:
     commit('delete from unsubs where hash=%s', ss)
   return l
   
@@ -91,16 +94,9 @@ def handleDB(ll):
 def unsubscribe(unsub, browser):
   return selenium.processPage(unsub,browser)
   
-def main(wipe=False):
+def mainMaster(wipe=False):
   if wipe:
     schema.wipe()
-  #commit('delete from unsubs where true')
-  #gmail.readEmailFromGmail()
-  #browser = selenium.getBrowser()
-  #uns = UnSub('http://click.lyftmail.com/unsub_center.aspx?qs=da6bddaa337452c8861ca82f0125d1a97b5ca3e1797ce5cf1754ceb6de34f4221ad2231ac40b5b7d284f2d927b01b574869c6d3fdcde9361a2736ce552288b28d7c6704f16852dbc', 'william.k.dvorak@gmail.com')
-  #commit('insert into unsubs (url, email) values (%s, %s)', (uns.url, uns.email))
-  #print unsubscribe(uns, browser)
-  #return
   mail =  gmail.connect()
   log.log('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
@@ -136,10 +132,29 @@ def main(wipe=False):
       mail = gmail.connect()
     time.sleep(sleeplen)
     
-main()
-
-#todo
-#get email from account, add links to queue
-#parse email as html
-#fill out form and submit
-#delete email from account
+def mainSlave():
+  log.log('print analytics total, successful, all broken')
+  results = fetch('select count(*) from analytics')
+  log.log('total', results)
+  results = fetch('select count(*) from analytics where success=1')
+  log.log('successful', results)
+  results = fetch('select email, url from analytics where success=0')
+  log.log(results)
+  
+  it = 0
+  while True:
+    it += 1
+    uss = None
+    log.log('handling unsubs')
+    results = fetch('select * from unsubs')
+    log.log(results)
+    results = fetch('select * from readmail')
+    log.log(results)
+    try:
+      handleDB(uss)
+    except Exception as e:
+      log.log('exception', e)
+    sleeplen = 20
+    log.log('sleeping for '+str(sleeplen))
+    time.sleep(sleeplen)
+    
