@@ -8,8 +8,10 @@ import log
 import hashlib
 import datetime
 
+salt = 'mysalt'
+
 def hashEmail(email):
-  email = email.lower()
+  email = email.lower() + salt
   m = hashlib.sha256()
   m.update(email)
   digest = m.hexdigest()
@@ -143,7 +145,7 @@ def getAnalyticsForEmail(email):
   total = results[0][0]
   results = fetch('select count(*) from anonymousanalytics where emailhash=%s and success=1', digest)
   successful = results[0][0]
-  return successful, total
+  return int(successful), int(total)
 
 def printAnalytics():
   log.log('print analytics total, successful, all broken')
