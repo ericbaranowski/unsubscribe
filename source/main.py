@@ -8,6 +8,13 @@ import log
 import hashlib
 import datetime
 
+def hashEmail(email):
+  email = email.lower()
+  m = hashlib.sha256()
+  m.update(email)
+  digest = m.hexdigest()
+  return digest
+
 class UnSub:
   def __init__(self, url, email, hashh):
     self.url = url
@@ -40,29 +47,27 @@ def getFive():
     commit('delete from unsubs where hash=%s', ss)
   return l
   
-def anonymousAnalytics(email, table):
-  email = email.lower()
-  m = hashlib.sha256()
-  m.update(email)
-  digest = m.hexdigest()
+def anonymousAnalytics(email, unsubhash, success=False):
+  digest = hashEmail(email)
   
   now = str(datetime.datetime.now())
-  results = fetch('select stamp from '+table+' where hash=%s', (digest))
+  results = fetch('select unsubhash, success from anonymousanalytics where unsubhash=%s', (unsubhash))
+  success = int(success)
   if results:
-    commit('update '+table+' set stamp=%s where hash=%s', (now, digest))
+    if int(results[0][1]) == 0 and success:
+      commit('update anonymousanalytics set success=1 where unsubhash=%s', (unsubhash))
   else:
-    commit('insert into '+table+' (hash, stamp) values (%s, %s)', (digest, now))
+    commit('insert into anonymousanalytics (emailhash, unsubhash, success, stamp) values (%s, %s, %s, %s)', (digest, unsubhash, str(success), now))
   
 def fullAnalytics(email, url, success):
   s = int(success)
   commit('insert into analytics (email, url, success) values (%s, %s, %s)', (email, url, s))
     
-def addEmailToSqlAnalytics(email, url=None, success=False):
-  table = 'emailhashestotal'
-  anonymousAnalytics(email, table)
-  if success:
-    table = 'emailhashespositive'
-    anonymousAnalytics(email, table)
+def addEmailToSqlAnalytics(uns, success=False):
+  email = uns.email
+  hashh = uns.hashh
+  url = uns.url
+  anonymousAnalytics(email, hashh, success)
   if url:
     fullAnalytics(email, url, success)
     
@@ -84,11 +89,11 @@ def handleDB(ll):
     res = unsubscribe(uns, browser)
     if not res:
       log.log('failed confirmation', uns)
-      addEmailToSqlAnalytics(uns.email,uns.url,False)
+      addEmailToSqlAnalytics(uns,False)
     else:
       log.log('confirmed unsub')
       commit('insert into usercount (another) values (1)')
-      addEmailToSqlAnalytics(uns.email,uns.url,True)
+      addEmailToSqlAnalytics(uns,True)
     browser = selenium.refreshBrowser(browser)
 
 def unsubscribe(unsub, browser):
@@ -131,8 +136,17 @@ def mainMaster(wipe=False):
     if it % 1000 == 0:
       mail = gmail.connect()
     time.sleep(sleeplen)
-    
+
+def getAnalyticsForEmail(email):
+  digest = hashEmail(email)
+  results = fetch('select count(*) from anonymousanalytics where emailhash=%s', digest)
+  total = results[0][0]
+  results = fetch('select count(*) from anonymousanalytics where emailhash=%s and success=1', digest)
+  successful = results[0][0]
+  return successful, total
+
 def printAnalytics():
+  schema.wipe()
   log.log('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
   log.log('total', results)
@@ -140,6 +154,8 @@ def printAnalytics():
   log.log('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.log(results)
+  log.log('success / total for william.k.dvorak')
+  log.log(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
     
 def mainSlave():
   log.log('print analytics total, successful, all broken')

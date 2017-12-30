@@ -21,13 +21,10 @@ def setup():
     success INT, \
     PRIMARY KEY (id))''')
     
-  commit('''CREATE TABLE emailhashespositive(id INT NOT NULL AUTO_INCREMENT, \
-    hash VARCHAR(64), \
-    stamp DATETIME, \
-    PRIMARY KEY (id))''')
-    
-  commit('''CREATE TABLE emailhashestotal(id INT NOT NULL AUTO_INCREMENT, \
-    hash VARCHAR(64), \
+  commit('''CREATE TABLE anonymousanalytics(id INT NOT NULL AUTO_INCREMENT, \
+    emailhash VARCHAR(64), \
+    unsubhash VARCHAR(8), \
+    success INT, \
     stamp DATETIME, \
     PRIMARY KEY (id))''')
 
