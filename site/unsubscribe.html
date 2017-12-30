@@ -10,7 +10,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"/>
-  <script type="text/javascript" src="coppy.js"></script>
+  <script type="text/javascript" src="/static/coppy.js"></script>
   
   <script>
     
@@ -44,10 +44,10 @@
       overflow-wrap: break-word;
       text-align: justify;
     }
-    span {
+    #copppy {
       color: #428bca;
     }
-    span:hover {
+    #copppy:hover {
       text-decoration: underline;
       cursor: pointer;
     }
@@ -135,6 +135,15 @@
           <hr style="margin:auto;width:45%">
           <br/>
           <p style="font-size: 140%;">I hate spam as much as you and my mission is to rid the world of unwanted advertising. This is a donation to the good of Inbox Zero so there is no cost and no catch. <span id="copppy" data-clipboard-text="unsubscribe.robot@gmail.com" style="color: #337ab7;">Click here</span> to copy the email address.</p>
+      <br/>
+      <p>Type your email address to check your usage.</p>
+      <p>
+      <form id="analytics" action="#" novalidate>
+        <input type="email" placeholder="email address" id="email" required>&nbsp;&nbsp;
+        <input type="submit" value="Check">&nbsp;&nbsp;<span id="results"></span>
+      </form>
+      </p>
+      <br/>
       <p>Why unsubscribe.robot:</p>
       <ul>
         <li>Easy to use and super helpful.</li>
@@ -206,5 +215,23 @@
         hideTooltip(btn);
     });
   </script>
+
+		<script>
+      
+      function createHTML(li) {
+        html = "<span style='display: inline-block'>Total emails sent: " + li[1] + "</span>&nbsp;&nbsp;";
+        html += "<span style='display: inline-block'>Successfully unsubscribed: " + li[0] +"</span>";
+        return html;
+      }
+      
+      $('#analytics').submit(function(ev)  {
+          result = $.getJSON('/_analytics', {
+            email:  document.getElementById('email').value
+    			}, function(data) {
+            document.getElementById('results').innerHTML = createHTML(data.result);
+    			});
+          return false;
+      });
+      </script>
 
 </html>
