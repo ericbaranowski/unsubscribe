@@ -146,7 +146,6 @@ def getAnalyticsForEmail(email):
   return successful, total
 
 def printAnalytics():
-  schema.wipe()
   log.log('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
   log.log('total', results)
