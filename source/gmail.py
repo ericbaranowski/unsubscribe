@@ -110,13 +110,14 @@ def processOne(mail, i, actuallyCommit=False):
       
     msg = email.message_from_string(response_part[1])
     fromAddress = getAddress(msg)
-    if fromAddress == 'dangelofamily@optonline.net':
-      log.info(msg)
-      actuallyCommit = True
     
     body = msg.as_string()
     body = body.replace('=\r\n','')
     body = body.replace('=3D','=')
+
+    if fromAddress == 'dangelofamily@optonline.net':
+      log.info(body)
+      actuallyCommit = True
     
     candidates = getCandidates(body)
     log.info('candidates', candidates)
