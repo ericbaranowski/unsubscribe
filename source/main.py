@@ -7,9 +7,18 @@ import schema
 import log
 import hashlib
 import datetime
+import string
+import random 
 
 salt = 'mysalt'
 
+def newHash():
+  lets = string.ascii_letters[:26] + string.digits
+  ans = 'tid'
+  for i in range(8):
+    ans += random.choice(lets)
+  return ans
+  
 def hashEmail(email):
   email = email.lower() + salt
   m = hashlib.sha256()
@@ -102,6 +111,7 @@ def unsubscribe(unsub, browser):
   return selenium.processPage(unsub,browser)
   
 def mainMaster(wipe=False):
+  log.tid = newHash()
   if wipe:
     schema.wipe()
   mail =  gmail.connect()
@@ -148,6 +158,9 @@ def getAnalyticsForEmail(email):
   return int(successful), int(total)
 
 def printAnalytics():
+  log.tid = newHash()
+  results = fetch('select * from analytics')
+  log.info('allunsubs', results)
   log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
   log.info('total', results)
@@ -155,10 +168,11 @@ def printAnalytics():
   log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.info(results)
-  log.info('success / total for william.k.dvorak')
+  log.info('success / not success for william.k.dvorak')
   log.info(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
     
 def mainSlave():
+  log.tid = newHash()
   log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
   log.info('total', results)

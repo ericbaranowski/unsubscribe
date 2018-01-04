@@ -176,7 +176,6 @@ def radios(browser, unused):
     for radio in l:
       text = getText(radio)
       if any(pos in text for pos in radioPositives):
-        log.info(text+ 'herere')
         if doFun(radio.click):
           clicked = True
           log.info('clicked radio')
@@ -193,7 +192,7 @@ def ass(browser, unused):
       continue
     if not aTag.is_displayed() or not aTag.is_enabled():
       continue
-    log.info(aTag.tag_name, text, aTag.get_attribute('type'))
+    #log.info(aTag.tag_name, text, aTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       funn = aTag.submit
@@ -213,7 +212,7 @@ def buttons(browser, unused):
       continue
     if not buttonTag.is_displayed() or not buttonTag.is_enabled():
       continue
-    log.info(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
+    #log.info(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       if doFun(buttonTag.click):
@@ -230,7 +229,7 @@ def onclicks(browser, unused):
       continue
     if not clickTag.is_displayed() or not clickTag.is_enabled():
       continue
-    log.info(clickTag.tag_name, text, clickTag.get_attribute('type'))
+    #log.info(clickTag.tag_name, text, clickTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       jss = clickTag.get_attribute('onclick')
@@ -248,7 +247,7 @@ def forms(browser, email):
       text = getText(child)
       if not child.is_displayed() or not child.is_enabled():
         continue
-      log.info(child.tag_name, text, child.get_attribute('type'))  
+      #log.info(child.tag_name, text, child.get_attribute('type'))  
       if child.tag_name == "input":
         if child.get_attribute('type') == "text":
           doFun(child.clear)
@@ -310,7 +309,7 @@ def subbbmit():
   submitTags = browser.find_elements_by_xpath("//*[@onsubmit]")
   submitTags = reversed(submitTags)
   for submitTag in submitTags:
-    log.info(submitTag.tag_name, submitTag.get_attribute('type'))
+    #log.info(submitTag.tag_name, submitTag.get_attribute('type'))
     time.sleep(delay)
     jss = submitTag.get_attribute('onsubmit')
     browser.execute_script(jss)
@@ -320,7 +319,7 @@ def clickRecursive(elem):
   children = elem.find_elements_by_xpath(".//*")
   children = [elem] + children
   for child in children:
-    log.info(child.tag_name, getText(child))
+    #log.info(child.tag_name, getText(child))
     return doFun(child.click)
   return False
 

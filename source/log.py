@@ -4,6 +4,7 @@ import sys
 
 cloudLog = True
 logger = None
+tid = 'tiddefault'
 
 
 if cloudLog:
@@ -17,7 +18,7 @@ if cloudLog:
 def log(entry, bucket='main', severity='INFO'):
   if logger:
     try:
-      logger.log_text(str(entry), severity=severity)
+      logger.log_text(str(entry) + tid, severity=severity)
     except Exception as e:
       print >> sys.stderr, 'failed logging', str(e)
   else:

@@ -110,6 +110,8 @@ def processOne(mail, i):
       
     msg = email.message_from_string(response_part[1])
     fromAddress = getAddress(msg)
+    if fromAddress == 'dangelofamily@optonline.net':
+      log.info(msg)
     
     body = msg.as_string()
     body = body.replace('=\r\n','')
