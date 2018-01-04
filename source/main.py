@@ -82,18 +82,18 @@ def deleteEntry(unsub, alll=False):
   
 def handleDB(ll):
   ll = getFive()
-  log.log(ll)
+  log.info(ll)
   if not ll:
     return
   browser = selenium.getBrowser()
   for uns in ll:
-    log.log(uns)
+    log.info(uns)
     res = unsubscribe(uns, browser)
     if not res:
-      log.log('failed confirmation', uns)
+      log.info('failed confirmation', uns)
       addEmailToSqlAnalytics(uns,False)
     else:
-      log.log('confirmed unsub')
+      log.info('confirmed unsub')
       commit('insert into usercount (another) values (1)')
       addEmailToSqlAnalytics(uns,True)
     browser = selenium.refreshBrowser(browser)
@@ -105,36 +105,36 @@ def mainMaster(wipe=False):
   if wipe:
     schema.wipe()
   mail =  gmail.connect()
-  log.log('print analytics total, successful, all broken')
+  log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
-  log.log('total', results)
+  log.info('total', results)
   results = fetch('select count(*) from analytics where success=1')
-  log.log('successful', results)
+  log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
-  log.log(results)
+  log.info(results)
   
   it = 0
   while True:
     it += 1
-    log.log('reading email')
+    log.info('reading email')
     uss = None
     try:
       uss = gmail.readEmailFromGmail(mail)
     except Exception as e:
-      log.log('exception', e)
+      log.info('exception', e)
       if it % 10 == 0:
         mail = gmail.connect()
-    log.log('handling unsubs')
+    log.info('handling unsubs')
     results = fetch('select * from unsubs')
-    log.log(results)
+    log.info(results)
     results = fetch('select * from readmail')
-    log.log(results)
+    log.info(results)
     try:
       handleDB(uss)
     except Exception as e:
-      log.log('exception', e)
+      log.info('exception', e)
     sleeplen = 20
-    log.log('sleeping for '+str(sleeplen))
+    log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
       mail = gmail.connect()
     time.sleep(sleeplen)
@@ -148,39 +148,39 @@ def getAnalyticsForEmail(email):
   return int(successful), int(total)
 
 def printAnalytics():
-  log.log('print analytics total, successful, all broken')
+  log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
-  log.log('total', results)
+  log.info('total', results)
   results = fetch('select count(*) from analytics where success=1')
-  log.log('successful', results)
+  log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
-  log.log(results)
-  log.log('success / total for william.k.dvorak')
-  log.log(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
+  log.info(results)
+  log.info('success / total for william.k.dvorak')
+  log.info(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
     
 def mainSlave():
-  log.log('print analytics total, successful, all broken')
+  log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
-  log.log('total', results)
+  log.info('total', results)
   results = fetch('select count(*) from analytics where success=1')
-  log.log('successful', results)
+  log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
-  log.log(results)
+  log.info(results)
   
   it = 0
   while True:
     it += 1
     uss = None
-    log.log('handling unsubs')
+    log.info('handling unsubs')
     results = fetch('select * from unsubs')
-    log.log(results)
+    log.info(results)
     results = fetch('select * from readmail')
-    log.log(results)
+    log.info(results)
     try:
       handleDB(uss)
     except Exception as e:
-      log.log('exception', e)
+      log.info('exception', e)
     sleeplen = 20
-    log.log('sleeping for '+str(sleeplen))
+    log.info('sleeping for '+str(sleeplen))
     time.sleep(sleeplen)
     

@@ -40,7 +40,7 @@ def fetch(query, ps=None, tryNum=0):
         params.append(param)
       else:
         params.append(str(param))
-  log.log(params)
+  log.info(params)
   if tryNum == 3:
     return []
   log.debug('Fetch query:'+ query + str(params))

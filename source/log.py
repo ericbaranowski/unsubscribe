@@ -26,17 +26,17 @@ def log(entry, bucket='main', severity='INFO'):
     except Exception as e:
       print >> sys.stderr, 'failed printing', str(e)
 
-def debug(entry, bucket='main'):
-  log(entry, bucket, 'DEBUG')
+def debug(*entry):
+  log(str(entry), 'main', 'DEBUG')
 
-def info(entry, bucket='main'):
-  log(entry, bucket, 'INFO')
+def info(*entry):
+  log(str(entry), 'main', 'INFO')
 
-def warn(entry, bucket='main'):
-  log(entry, bucket, 'WARNING')
+def warn(*entry):
+  log(str(entry), 'main', 'WARNING')
 
-def error(entry, bucket='main'):
-  log(entry, bucket, 'ERROR')
+def error(*entry):
+  log(str(entry), 'main', 'ERROR')
   
 
 #logging_client = logging.Client()

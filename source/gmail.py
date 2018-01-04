@@ -86,7 +86,7 @@ def getCandidates(body):
   end = lower.rfind('content-type: text/html')
   cccc = lower.count('content-type: text/html')
   if cccc > 1:
-    log.log('more than one text/html', cccc, lower)
+    log.info('more than one text/html', cccc, lower)
     
   for lp in linkPositives:
     start = lower.find('content-type')
@@ -102,7 +102,7 @@ def processOne(mail, i):
   try:
     unused, data = mail.fetch(i, '(RFC822)' )
   except Exception as e:
-    log.log(e)
+    log.info(e)
   hashh = newHash()
   for response_part in data:
     if not isinstance(response_part, tuple):
@@ -116,7 +116,7 @@ def processOne(mail, i):
     body = body.replace('=3D','=')
     
     candidates = getCandidates(body)
-    log.log('candidates', candidates)
+    log.info('candidates', candidates)
     ccs = list()
     for c in candidates:
       commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
@@ -136,25 +136,25 @@ def connect():
     mail = imaplib.IMAP4_SSL(imap)
     mail.login(address,password)
   except Exception as e:
-    log.log('exception connecting to gmail', e)
+    log.info('exception connecting to gmail', e)
   return mail
 
 def readEmailFromGmail(mail):
   data = None
   try:
-    log.log('login and get emails')
+    log.info('login and get emails')
 
     mail.select('inbox')
     now = (datetime.datetime.now()-timedelta(days=1)).strftime('%d-%b-%Y')
     if now[0] == '0':
       now = now[1:]
-    log.log('(SINCE %s)' % now)
+    log.info('(SINCE %s)' % now)
     unused, data = mail.search(None, '(SINCE %s)' % now)
   except Exception as e:
-    log.log(e)
+    log.info(e)
     
   if not data:
-    log.log('no new emails %s', str(mail))
+    log.info('no new emails %s', str(mail))
     return
 
   uss = list()
@@ -166,14 +166,14 @@ def readEmailFromGmail(mail):
   first_email_id = int(id_list[0])
   latest_email_id = int(id_list[-1])
   
-  log.log('track read in db')
+  log.info('track read in db')
   emails = fetch('select email from readmail')
   read = set()
   for e in emails:
     read.add(int(e[0]))
   processed = set()
   
-  log.log('process')
+  log.info('process')
   for i in range(first_email_id, latest_email_id+1):
     if int(i) in read:
       continue
@@ -181,7 +181,7 @@ def readEmailFromGmail(mail):
     uss.extend(candidates)
     processed.add(i)
   
-  log.log('write read in db')
+  log.info('write read in db')
   for i in processed:
     commit('insert into readmail (email) values (%s)', i)
   return uss

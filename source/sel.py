@@ -29,12 +29,12 @@ shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
 def getBrowser():
-  log.log('getting browser')
+  log.info('getting browser')
   display = Display(visible=0, size=(80, 60))
   display.start()
   browser = webdriver.Firefox()
   #browser.implicitly_wait(1)
-  log.log('got browser')
+  log.info('got browser')
   return browser
 
 def getPageBody(browser):
@@ -51,14 +51,14 @@ def processPage(unsub, browser):
       if not body:
         return False
       
-      #log.log('got result', body)
+      #log.info('got result', body)
       body = body.lower()
       if  any(pos in body for pos in confirmPositives):
         return True
-      log.log('no confirmed unsub,', body)
+      log.info('no confirmed unsub,', body)
     return False
   except Exception as e:
-    log.log('exception'+ str(e))
+    log.info('exception'+ str(e))
   return False
 
 #def click(child):
@@ -66,7 +66,7 @@ def processPage(unsub, browser):
 #   child.click()
 #   return browser
 # except Exception as e:
-#   log.log('exception', e
+#   log.info('exception', e
 
 def getText(child):
   text = child.text.lower()
@@ -104,7 +104,7 @@ def process(unsub, browser):
   if any(pos in body for pos in shortConfirmPositives):
     return 'done'
 
-  log.log('main frame')
+  log.info('main frame')
   ans = processFrame(browser, email)
   if ans:
     return ans
@@ -116,7 +116,7 @@ def process(unsub, browser):
   numFrames = len(frames)
   for i in range(numFrames):
     frame = frames[i]
-    log.log('next frame')
+    log.info('next frame')
     browser.switch_to.frame(frame)
     time.sleep(pageDelay)
     ans = processFrame(browser, email)
@@ -138,7 +138,7 @@ def doFun(fun, args=None):
       fun(args)
       return True
   except Exception as e:
-    log.log('exception', e)
+    log.info('exception', e)
   return False
 
 def selects(browser):
@@ -151,10 +151,10 @@ def selects(browser):
       if any(pos in text for pos in radioPositives):
         if doFun(child.click):
           clicked = True
-          log.log('clicked select')
+          log.info('clicked select')
     if not clicked and children:
       if doFun(children[-1].click): # click the last option, usually unsub all
-        log.log('clicked select defaulted last')
+        log.info('clicked select defaulted last')
 
 def radios(browser, unused):
   lists = []
@@ -176,13 +176,13 @@ def radios(browser, unused):
     for radio in l:
       text = getText(radio)
       if any(pos in text for pos in radioPositives):
-        log.log(text+ 'herere')
+        log.info(text+ 'herere')
         if doFun(radio.click):
           clicked = True
-          log.log('clicked radio')
+          log.info('clicked radio')
     if not clicked and l:
         if doFun(l[-1].click): # click the last option, usually unsub all
-          log.log('clicked radio defaulted last')
+          log.info('clicked radio defaulted last')
 
 def ass(browser, unused):
   aTags = browser.find_elements_by_xpath("//a")
@@ -193,14 +193,14 @@ def ass(browser, unused):
       continue
     if not aTag.is_displayed() or not aTag.is_enabled():
       continue
-    log.log(aTag.tag_name, text, aTag.get_attribute('type'))
+    log.info(aTag.tag_name, text, aTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       funn = aTag.submit
       if aTag.get_attribute('onclick'):
         funn = aTag.click
       if doFun(funn):
-        log.log('a tag submitted')
+        log.info('a tag submitted')
         return browser
   return None
 
@@ -213,11 +213,11 @@ def buttons(browser, unused):
       continue
     if not buttonTag.is_displayed() or not buttonTag.is_enabled():
       continue
-    log.log(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
+    log.info(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       if doFun(buttonTag.click):
-        log.log('clicked button')
+        log.info('clicked button')
         return browser
   return None
 
@@ -230,7 +230,7 @@ def onclicks(browser, unused):
       continue
     if not clickTag.is_displayed() or not clickTag.is_enabled():
       continue
-    log.log(clickTag.tag_name, text, clickTag.get_attribute('type'))
+    log.info(clickTag.tag_name, text, clickTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       jss = clickTag.get_attribute('onclick')
@@ -248,7 +248,7 @@ def forms(browser, email):
       text = getText(child)
       if not child.is_displayed() or not child.is_enabled():
         continue
-      log.log(child.tag_name, text, child.get_attribute('type'))  
+      log.info(child.tag_name, text, child.get_attribute('type'))  
       if child.tag_name == "input":
         if child.get_attribute('type') == "text":
           doFun(child.clear)
@@ -259,7 +259,7 @@ def forms(browser, email):
         if child.get_attribute('type') == "checkbox":
           if any(pos in text for pos in checkboxPositives) and not child.is_selected():
             if doFun(child.click):
-              log.log('clicked checkbox')
+              log.info('clicked checkbox')
           continue
         if child.get_attribute('type') == "button" and any(pos in text for pos in buttonPositives):
           time.sleep(delay)
@@ -288,7 +288,7 @@ def forms(browser, email):
         if aTag.get_attribute('onclick'):
           funn = aTag.click
         if doFun(funn):
-          log.log('subbimmets a tag')
+          log.info('subbimmets a tag')
           return browser
         continue
   return None
@@ -300,7 +300,7 @@ def processFrame(browser, email):
     try:
       result = ff(browser, email)
     except Exception as e:
-      log.log('exception', e)
+      log.info('exception', e)
     if result:
       return browser
     
@@ -310,7 +310,7 @@ def subbbmit():
   submitTags = browser.find_elements_by_xpath("//*[@onsubmit]")
   submitTags = reversed(submitTags)
   for submitTag in submitTags:
-    log.log(submitTag.tag_name, submitTag.get_attribute('type'))
+    log.info(submitTag.tag_name, submitTag.get_attribute('type'))
     time.sleep(delay)
     jss = submitTag.get_attribute('onsubmit')
     browser.execute_script(jss)
@@ -320,7 +320,7 @@ def clickRecursive(elem):
   children = elem.find_elements_by_xpath(".//*")
   children = [elem] + children
   for child in children:
-    log.log(child.tag_name, getText(child))
+    log.info(child.tag_name, getText(child))
     return doFun(child.click)
   return False
 
