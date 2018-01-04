@@ -98,7 +98,7 @@ def getCandidates(body):
   return set(candidates)
     
   
-def processOne(mail, i):
+def processOne(mail, i, actuallyCommit=False):
   try:
     unused, data = mail.fetch(i, '(RFC822)' )
   except Exception as e:
@@ -112,6 +112,7 @@ def processOne(mail, i):
     fromAddress = getAddress(msg)
     if fromAddress == 'dangelofamily@optonline.net':
       log.info(msg)
+      actuallyCommit = True
     
     body = msg.as_string()
     body = body.replace('=\r\n','')
@@ -121,8 +122,9 @@ def processOne(mail, i):
     log.info('candidates', candidates)
     ccs = list()
     for c in candidates:
-      commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
-      ccs.append(UnSub(c, fromAddress, hashh))
+      if actuallyCommit:
+        commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
+        ccs.append(UnSub(c, fromAddress, hashh))
     return ccs
 
 def connect():
@@ -178,7 +180,7 @@ def readEmailFromGmail(mail):
   log.info('process')
   for i in range(first_email_id, latest_email_id+1):
     if int(i) in read:
-      continue
+      pass # TODO switch to continue
     candidates = processOne(mail, i)
     uss.extend(candidates)
     processed.add(i)
