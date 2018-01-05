@@ -83,10 +83,6 @@ def getCandidates(body):
   length = len(lower)
   
   candidates = list()
-  end = lower.rfind('content-type: text/html')
-  cccc = lower.count('content-type: text/html')
-  if cccc > 1:
-    log.info('more than one text/html', cccc, lower)
     
   for lp in linkPositives:
     start = lower.find('content-type')
@@ -94,7 +90,7 @@ def getCandidates(body):
       c, start = getCandidate(body, lp, start)
       if c:
         candidates.append(c)
-      start = lower.find(lp, start+1,end)
+      start = lower.find(lp, start+1)
   return set(candidates)
     
   
@@ -122,6 +118,7 @@ def processOne(mail, i, actuallyCommit=False):
     log.info('candidates', candidates)
     ccs = list()
     for c in candidates:
+      log.info('candidate123', c, fromAddress)
       if actuallyCommit:
         commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
         ccs.append(UnSub(c, fromAddress, hashh))
