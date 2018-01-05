@@ -122,9 +122,6 @@ def processOne(mail, i, actuallyCommit=False):
     body = msg.as_string()
     body = body.replace('=\r\n','')
     body = body.replace('=3D','=')
-
-    if fromAddress == 'licollision@optonline.net':
-      actuallyCommit = True
     
     candidates = getCandidates(body)
     ccs = list()
