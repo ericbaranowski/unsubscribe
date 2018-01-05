@@ -12,7 +12,7 @@ from datetime import timedelta
 import string
 import random
 
-linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv']
+linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv', 'manage subscript', 'manage my subscript', 'manage your subscript']
 
 from xml.sax.saxutils import escape, unescape
 # escape() and unescape() takes care of &, < and >.
@@ -20,6 +20,7 @@ html_escape_table = {
     '"': "&quot;",
     "'": "&apos;"
 }
+
 html_unescape_table = {v:k for k, v in html_escape_table.items()}
 
 def html_unescape(text):

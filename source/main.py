@@ -160,7 +160,9 @@ def getAnalyticsForEmail(email):
 def printAnalytics():
   log.tid = newHash()
   results = fetch('select * from analytics')
-  log.info('allunsubs', results)
+  log.info('all analytics', results)
+  results = fetch('select count(*) from unsubs')
+  log.info('current unsubs', results)
   log.info('print analytics total, successful, all broken')
   results = fetch('select count(*) from analytics')
   log.info('total', results)

@@ -38,7 +38,10 @@ def getBrowser():
   return browser
 
 def getPageBody(browser):
-  return browser.execute_script(js_code)
+  aa = browser.execute_script(js_code)
+  if aa:
+    return aa
+  return browser.page_source
 
 def processPage(unsub, browser):
   try:
@@ -49,6 +52,7 @@ def processPage(unsub, browser):
       time.sleep(pageDelay)
       body = getPageBody(browser)
       if not body:
+        log.info('did not get a confirm page')
         return False
       
       #log.info('got result', body)

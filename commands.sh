@@ -1,3 +1,5 @@
+cd unsubscribe; git pull; cd ..
+
 docker build -t master .
 docker rm -f $(docker ps -aq); docker run -t master &
 
