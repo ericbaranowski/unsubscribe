@@ -143,7 +143,7 @@ def mainMaster(wipe=False):
       handleDB(uss)
     except Exception as e:
       log.info('exception', e)
-    sleeplen = 600
+    sleeplen = 120
     log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
       mail = gmail.connect()
