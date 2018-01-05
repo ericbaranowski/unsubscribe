@@ -75,19 +75,19 @@ def getCandidateNearby(body, keyword, start):
   index = lower.find(keyword,start)
   if index == -1:
     return None, start
-  searchArea = body[index-600:index+600]
-  for lp in linkPositives:
-    if lp in searchArea:
-      index = min(index, lower.find(lp, start))
-  httpIndex = body.find('http', index)
-  if httpIndex - index > 100:
+  kindexs = lower.rfind('https:', index-600, index)
+  kindex = lower.rfind('http:', index-600, index)
+  urlindex = kindexs
+  if kindexs == -1 and kindex == -1:
     return None, start
-  endKarat = body.find('>', httpIndex + 2)
-  endQuote = body.find('"', httpIndex + 2)
-  endIndex = min(endKarat, endQuote)
-  if endQuote == -1:
-    endIndex = endKarat
-  url = html_unescape(body[httpIndex:endIndex])
+  if kindexs > 0 and kindex > 0:
+    urlindex = max(kindex, kindexs)
+  if kindexs == -1:
+    urlindex = kindex
+  urlendindex = lower.find('"', urlindex+2, index)
+  if urlendindex == -1:
+    return None, start
+  url = html_unescape(body[urlindex:urlendindex])
   return url, index
   
 def getCandidates(body):
@@ -122,6 +122,8 @@ def processOne(mail, i, actuallyCommit=False):
     body = msg.as_string()
     body = body.replace('=\r\n','')
     body = body.replace('=3D','=')
+    if fromAddress == 'dangelofamily@optonline.net' or fromAddress == 'licollision@optonline.net':
+      actuallyCommit=True
     
     candidates = getCandidates(body)
     ccs = list()
