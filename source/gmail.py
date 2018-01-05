@@ -54,22 +54,6 @@ def getAddress(msg):
     return fromAddressFull
   return fromAddressFull[start:end]
   
-def getCandidate(body, keyword, start):
-  lower = body.lower()
-  index = lower.find(keyword,start)
-  if index == -1:
-    return None, start
-  httpIndex = body.find('http', index)
-  if httpIndex - index > 100:
-    return None, start
-  endKarat = body.find('>', httpIndex + 2)
-  endQuote = body.find('"', httpIndex + 2)
-  endIndex = min(endKarat, endQuote)
-  if endQuote == -1:
-    endIndex = endKarat
-  url = html_unescape(body[httpIndex:endIndex])
-  return url, index
-  
 def getCandidateNearby(body, keyword, start):
   lower = body.lower()
   index = lower.find(keyword,start)
@@ -99,7 +83,7 @@ def getCandidates(body):
   for lp in linkPositives:
     start = lower.find('content-type')
     while start > 5:
-      c, start = getCandidate(body, lp, start)
+      c, start = getCandidateNearby(body, lp, start)
       if c:
         candidates.append(c)
       start = lower.find(lp, start+1)
