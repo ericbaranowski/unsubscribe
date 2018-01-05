@@ -81,7 +81,7 @@ def getCandidates(body):
   candidates = list()
     
   for lp in linkPositives:
-    start = lower.find('content-type')
+    start = lower.find('content-type: text/html')
     while start > 5:
       c, start = getCandidateNearby(body, lp, start)
       if c:
@@ -171,7 +171,7 @@ def readEmailFromGmail(mail):
     actuallyCommit = True
     if int(i) in read:
       actuallyCommit=False
-      # TODO actually continue here to short circuit
+      continue
     candidates = processOne(mail, i, actuallyCommit)
     uss.extend(candidates)
     processed.add(i)
