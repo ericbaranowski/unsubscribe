@@ -113,12 +113,12 @@ def processOne(mail, i, actuallyCommit=False):
 
     if fromAddress == 'dangelofamily@optonline.net' or fromAddress == 'william.k.dvorak@gmail.com':
       log.info(body)
+      actuallyCommit = True
     
     candidates = getCandidates(body)
-    log.info('candidates', candidates)
     ccs = list()
     for c in candidates:
-      log.info('candidate123', c, fromAddress)
+      log.info('candidate', fromAddress, c)
       if actuallyCommit:
         commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
         ccs.append(UnSub(c, fromAddress, hashh))
@@ -176,9 +176,11 @@ def readEmailFromGmail(mail):
   
   log.info('process')
   for i in range(first_email_id, latest_email_id+1):
+    actuallyCommit = True
     if int(i) in read:
-      pass # TODO switch to continue
-    candidates = processOne(mail, i)
+      actuallyCommit=False
+      # TODO actually continue here to short circuit
+    candidates = processOne(mail, i, actuallyCommit)
     uss.extend(candidates)
     processed.add(i)
   
