@@ -14,6 +14,18 @@ import random
 
 linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv']
 
+from xml.sax.saxutils import escape, unescape
+# escape() and unescape() takes care of &, < and >.
+html_escape_table = {
+    '"': "&quot;",
+    "'": "&apos;"
+}
+html_unescape_table = {v:k for k, v in html_escape_table.items()}
+
+def html_unescape(text):
+  return unescape(text, html_unescape_table)
+
+
 def newHash():
   lets = string.ascii_letters[:26] + string.digits
   ans = ''
@@ -55,7 +67,7 @@ def getCandidate(body, keyword, start):
   endIndex = min(endKarat, endQuote)
   if endQuote == -1:
     endIndex = endKarat
-  url = body[httpIndex:endIndex]
+  url = html_unescape(body[httpIndex:endIndex])
   return url, index
   
 def getCandidateNearby(body, keyword, start):
@@ -75,7 +87,7 @@ def getCandidateNearby(body, keyword, start):
   endIndex = min(endKarat, endQuote)
   if endQuote == -1:
     endIndex = endKarat
-  url = body[httpIndex:endIndex]
+  url = html_unescape(body[httpIndex:endIndex])
   return url, index
   
 def getCandidates(body):
@@ -111,7 +123,7 @@ def processOne(mail, i, actuallyCommit=False):
     body = body.replace('=\r\n','')
     body = body.replace('=3D','=')
 
-    if fromAddress == 'dangelofamily@optonline.net':
+    if fromAddress == 'licollision@optonline.net':
       actuallyCommit = True
     
     candidates = getCandidates(body)

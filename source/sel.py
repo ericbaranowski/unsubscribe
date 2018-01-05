@@ -24,7 +24,7 @@ checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out', 'not intereste
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update', 'don\'t send me any', 'don\'t send any', 'stop sending', 'confirm', 'do not email', 'block all emails']
 radioPositives = ['all', 'none', 'complete']
 confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have removed', 'request has been processed', 'request processed', 'unsubscribe confirmation']
-shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 'now unsubscribed', 'unsubscribe successful', 'successfully removed', 'unsubscribe confirmation','unsubscribed successfully']
+shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 'now unsubscribed', 'unsubscribe successful', 'successfully removed', 'unsubscribe confirmation','unsubscribed successfully', 'been unsubscribed']
 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
