@@ -111,8 +111,7 @@ def processOne(mail, i, actuallyCommit=False):
     body = body.replace('=\r\n','')
     body = body.replace('=3D','=')
 
-    if fromAddress == 'dangelofamily@optonline.net' or fromAddress == 'william.k.dvorak@gmail.com':
-      log.info(body)
+    if fromAddress == 'dangelofamily@optonline.net':
       actuallyCommit = True
     
     candidates = getCandidates(body)
