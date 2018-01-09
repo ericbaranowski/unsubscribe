@@ -132,7 +132,7 @@ def mainMaster(wipe=False):
       uss = gmail.readEmailFromGmail(mail)
     except Exception as e:
       log.info('exception', e)
-      if it % 10 == 0:
+      if it % 2 == 0:
         mail = gmail.connect()
     log.info('handling unsubs')
     results = fetch('select * from unsubs')

@@ -150,17 +150,15 @@ def connect():
 
 def readEmailFromGmail(mail):
   data = None
-  try:
-    log.info('login and get emails')
+  log.info('login and get emails')
 
-    mail.select('inbox')
-    now = (datetime.datetime.now()-timedelta(days=2)).strftime('%d-%b-%Y')
-    if now[0] == '0':
-      now = now[1:]
-    log.info('(SINCE %s)' % now)
-    unused, data = mail.search(None, '(SINCE %s)' % now)
-  except Exception as e:
-    log.info(e)
+  mail.select('inbox')
+  now = (datetime.datetime.now()-timedelta(days=2)).strftime('%d-%b-%Y')
+  if now[0] == '0':
+    now = now[1:]
+  log.info('(SINCE %s)' % now)
+  unused, data = mail.search(None, '(SINCE %s)' % now)
+
     
   if not data:
     log.info('no new emails %s', str(mail))
