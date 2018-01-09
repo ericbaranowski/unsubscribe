@@ -134,15 +134,6 @@ def mainMaster(wipe=False):
       log.info('exception', e)
       if it % 2 == 0:
         mail = gmail.connect()
-    log.info('handling unsubs')
-    results = fetch('select * from unsubs')
-    log.info(results)
-    results = fetch('select * from readmail')
-    log.info(results)
-    try:
-      handleDB(uss)
-    except Exception as e:
-      log.info('exception', e)
     sleeplen = 120
     log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
