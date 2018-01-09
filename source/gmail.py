@@ -12,20 +12,13 @@ from datetime import timedelta
 import string
 import random
 
-linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv', 'manage subscript', 'manage my subscript', 'manage your subscript']
+lookaroundLenTight = 700
+lookaroundLenLoose = 1300
 
-from xml.sax.saxutils import escape, unescape
-# escape() and unescape() takes care of &, < and >.
-html_escape_table = {
-    '"': "&quot;",
-    "'": "&apos;"
-}
-
-html_unescape_table = {v:k for k, v in html_escape_table.items()}
-
-def html_unescape(text):
-  return unescape(text, html_unescape_table)
-
+linkPositives = ['unsubscribe', 'remove', 'stop receiv', 'opt-out', 'opt out','not to receiv', 'not receiv', 'manage subscript', 'manage my subscript', 'manage your subscript', 'don\'t want to receive update', 'don\'t want to receive email', 'no longer wish to receive']
+  
+import HTMLParser
+parser = HTMLParser.HTMLParser()
 
 def newHash():
   lets = string.ascii_letters[:26] + string.digits
@@ -55,40 +48,62 @@ def getAddress(msg):
     return fromAddressFull
   return fromAddressFull[start:end]
   
-def getCandidateNearby(body, keyword, start):
-  lower = body.lower()
+def getHttpIndex(lower, keywordIndex, lookaroundLen):
+  end = keywordIndex
+  start = max(keywordIndex-lookaroundLen,0)
+  kindexs = lower.rfind('https:', start, end)
+  kindex = lower.rfind('http:', start, end)
+  urlindex = kindexs
+  if kindexs == -1 and kindex == -1:
+    start = keywordIndex
+    end = min(keywordIndex + lookaroundLen, len(lower))
+    kindexs = lower.find('https:', start, end)
+    kindex = lower.find('http:', start, end)
+    urlindex = kindexs
+    if kindexs == -1 and kindex == -1:
+      return None, -1
+  if kindexs > 0 and kindex > 0:
+    urlindex = min(kindex, kindexs)
+  if kindexs == -1:
+    urlindex = kindex
+  return urlindex, end
+  
+def getCandidateNearby(lower, body, keyword, start):
   index = lower.find(keyword,start)
   if index == -1:
     return None, start
-  kindexs = lower.rfind('https:', index-600, index)
-  kindex = lower.rfind('http:', index-600, index)
-  urlindex = kindexs
-  if kindexs == -1 and kindex == -1:
-    return None, start
-  if kindexs > 0 and kindex > 0:
-    urlindex = max(kindex, kindexs)
-  if kindexs == -1:
-    urlindex = kindex
-  urlendindex = lower.find('"', urlindex+2, index)
+  urlindex, end = getHttpIndex(lower, index,lookaroundLenTight)
+  if urlindex == None:
+    urlindex, end = getHttpIndex(lower, index,lookaroundLenLoose)
+    if urlindex == None:
+      return None, start
+  urlendindex = lower.find('"', urlindex+2, end)
   if urlendindex == -1:
     return None, start
-  url = html_unescape(body[urlindex:urlendindex])
-  return url, index
+  url = body[urlindex:urlendindex]
+  return url, end
   
 def getCandidates(body):
-  lower = body.lower()
+  body = parser.unescape(body)
+  lower =  body.lower()
   length = len(lower)
   
-  candidates = list()
+  candidates = set()
+  lower = lower.replace('unsubscribe.robot','a'*17).replace('unsubscriberobot','a'*16)
+  startOrig = lower.rfind('content-type: text/html')
+  if startOrig == -1:
+    startOrig = lower.rfind('content-type: text/plain')
+    if startOrig == -1:
+      return set()
     
   for lp in linkPositives:
-    start = lower.find('content-type: text/html')
+    start = startOrig
     while start > 5:
-      c, start = getCandidateNearby(body, lp, start)
+      c, start = getCandidateNearby(lower, body, lp, start)
       if c:
-        candidates.append(c)
+        candidates.add(c)
       start = lower.find(lp, start+1)
-  return set(candidates)
+  return candidates
     
   
 def processOne(mail, i, actuallyCommit=False):
@@ -139,7 +154,7 @@ def readEmailFromGmail(mail):
     log.info('login and get emails')
 
     mail.select('inbox')
-    now = (datetime.datetime.now()-timedelta(days=100)).strftime('%d-%b-%Y')
+    now = (datetime.datetime.now()-timedelta(days=2)).strftime('%d-%b-%Y')
     if now[0] == '0':
       now = now[1:]
     log.info('(SINCE %s)' % now)
