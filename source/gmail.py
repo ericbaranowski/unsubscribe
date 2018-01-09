@@ -84,26 +84,30 @@ def getCandidateNearby(lower, body, keyword, start):
   return url, end
   
 def getCandidates(body):
-  body = parser.unescape(body)
-  lower =  body.lower()
-  length = len(lower)
+  try:
+    body = parser.unescape(body)
+    lower =  body.lower()
+    length = len(lower)
   
-  candidates = set()
-  lower = lower.replace('unsubscribe.robot','a'*17).replace('unsubscriberobot','a'*16)
-  startOrig = lower.rfind('content-type: text/html')
-  if startOrig == -1:
-    startOrig = lower.rfind('content-type: text/plain')
+    candidates = set()
+    lower = lower.replace('unsubscribe.robot','a'*17).replace('unsubscriberobot','a'*16)
+    startOrig = lower.rfind('content-type: text/html')
     if startOrig == -1:
-      return set()
+      startOrig = lower.rfind('content-type: text/plain')
+      if startOrig == -1:
+        return set()
     
-  for lp in linkPositives:
-    start = startOrig
-    while start > 5:
-      c, start = getCandidateNearby(lower, body, lp, start)
-      if c:
-        candidates.add(c)
-      start = lower.find(lp, start+1)
-  return candidates
+    for lp in linkPositives:
+      start = startOrig
+      while start > 5:
+        c, start = getCandidateNearby(lower, body, lp, start)
+        if c:
+          candidates.add(c)
+        start = lower.find(lp, start+1)
+    return candidates
+  except Exception as e:
+    log.warn(e)
+  return set()
     
   
 def processOne(mail, i, actuallyCommit=False):
