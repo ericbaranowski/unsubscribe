@@ -9,6 +9,7 @@ import hashlib
 import datetime
 import string
 import random 
+from datetime import timedelta
 
 salt = 'mysalt'
 
@@ -134,7 +135,7 @@ def mainMaster(wipe=False):
       log.info('exception', e)
       if it % 2 == 0:
         mail = gmail.connect()
-    sleeplen = 120
+    sleeplen = 3600
     log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
       mail = gmail.connect()
@@ -146,7 +147,18 @@ def getAnalyticsForEmail(email):
   total = results[0][0]
   results = fetch('select count(*) from anonymousanalytics where emailhash=%s and success=1', digest)
   successful = results[0][0]
-  return int(successful), int(total)
+  if email == 'admin':
+    results = fetch('select count(*) from anonymousanalytics')
+    total = results[0][0]
+    results = fetch('select count(*) from anonymousanalytics where success=1')
+    successful = results[0][0]
+  if email == 'admin24':
+    now = str(datetime.datetime.now()-timedelta(hours=24))
+    results = fetch('select count(*) from anonymousanalytics where stamp > %s', now)
+    total = results[0][0]
+    results = fetch('select count(*) from anonymousanalytics where success=1 and stamp > %s', now)
+    successful = results[0][0]
+  return [str(int(successful)), str(int(total)-int(successful))]
 
 def printAnalytics():
   log.tid = newHash()
