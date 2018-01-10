@@ -10,7 +10,7 @@ tid = 'tiddefault'
 if cloudLog:
   bucket = 'main'
   try:
-    logging_client = logging.Client('consulting-2718')
+    logging_client = logging.Client('hosting-2718')
     logger = logging_client.logger(bucket)
   except:
     pass
