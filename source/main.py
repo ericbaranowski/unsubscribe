@@ -54,9 +54,7 @@ def getFive():
   l = list()
   for r in results:
     l.append(UnSub(r[0], r[1], r[2]))
-  for ss in origSet:
-    commit('delete from unsubs where hash=%s', ss)
-  return l
+  return l, origSet
   
 def anonymousAnalytics(email, unsubhash, success=False):
   digest = hashEmail(email)
@@ -90,7 +88,7 @@ def deleteEntry(unsub, alll=False):
     commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
   
 def handleDB(ll):
-  ll = getFive()
+  ll, origSet = getFive()
   log.info(ll)
   if not ll:
     return
@@ -106,6 +104,8 @@ def handleDB(ll):
       commit('insert into usercount (another) values (1)')
       addEmailToSqlAnalytics(uns,True)
     browser = selenium.refreshBrowser(browser)
+  for ss in origSet:
+    commit('delete from unsubs where hash=%s', ss)
 
 def unsubscribe(unsub, browser):
   return selenium.processPage(unsub,browser)
