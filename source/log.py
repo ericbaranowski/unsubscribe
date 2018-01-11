@@ -1,4 +1,4 @@
-from google.cloud import logging
+
 
 import sys
 
@@ -10,6 +10,7 @@ tid = 'tiddefault'
 if cloudLog:
   bucket = 'main'
   try:
+    from google.cloud import logging
     logging_client = logging.Client('hosting-2718')
     logger = logging_client.logger(bucket)
   except:

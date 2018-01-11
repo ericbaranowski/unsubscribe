@@ -153,7 +153,7 @@ def getAnalyticsForEmail(email):
     results = fetch('select count(*) from anonymousanalytics where success=1')
     successful = results[0][0]
   if email == 'admin24':
-    now = str(datetime.datetime.now()-timedelta(hours=-24))
+    now = str(datetime.datetime.now()-timedelta(hours=24))
     results = fetch('select count(*) from anonymousanalytics where stamp > %s', now)
     total = results[0][0]
     results = fetch('select count(*) from anonymousanalytics where success=1 and stamp > %s', now)
