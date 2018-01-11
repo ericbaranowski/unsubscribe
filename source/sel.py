@@ -59,7 +59,7 @@ def processPage(unsub, browser):
       body = body.lower()
       if  any(pos in body for pos in confirmPositives):
         return True
-      log.info('no confirmed unsub,', body)
+      log.info('no confirmed unsub,', body[:50])
     return False
   except Exception as e:
     log.info('exception'+ str(e))

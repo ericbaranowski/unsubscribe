@@ -123,7 +123,9 @@ def mainMaster(wipe=False):
   log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.info(results)
-  
+
+  rr = random.randint(20,21)
+  time.sleep(rr)
   it = 0
   while True:
     it += 1
@@ -185,7 +187,8 @@ def mainSlave():
   log.info('successful', results)
   results = fetch('select email, url from analytics where success=0')
   log.info(results)
-  
+  rr = random.randint(20,40)
+  time.sleep(rr)
   it = 0
   while True:
     it += 1
