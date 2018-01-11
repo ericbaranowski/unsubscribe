@@ -38,5 +38,4 @@ RUN echo "$(cat /app/main.py)\nmainMaster()" > /app/main.py
 
 ENTRYPOINT ["python"]
 
-CMD ["localSql.py"]
 CMD ["main.py"]
