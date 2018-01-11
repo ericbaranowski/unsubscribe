@@ -1,12 +1,13 @@
 cd unsubscribe; git pull; cd ..
 
 docker build -t master .
-docker rm -f $(docker ps -aq); docker run --restart always -t master   &
-
 docker build -f Dockerfile_slave -t slave .
+docker build -f Dockerfile_analytics -t analytics .
+
+docker rm -f $(docker ps -aq); docker run --restart always -t master   &
 docker run --restart always -t slave  &
 
-docker build -f Dockerfile_analytics -t analytics .
+
 docker run -t analytics &
 
 
