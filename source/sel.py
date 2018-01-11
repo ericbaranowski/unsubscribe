@@ -332,6 +332,7 @@ def refreshBrowser(browser):
   time.sleep(pageDelay)
   body = getPageBody(browser).lower()
   if 'whatsmybrowser.org' not in body:
+    browser.quit()
     browser = getBrowser()
   return browser
   

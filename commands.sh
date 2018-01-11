@@ -6,6 +6,8 @@ docker build -f Dockerfile_analytics -t analytics .
 
 docker rm -f $(docker ps -aq); docker run --restart always -t master   &
 docker run --restart always -t slave  &
+docker run --restart always -t slave  &
+docker run --restart always -t slave  &
 
 
 docker run -t analytics &

@@ -66,6 +66,8 @@ def anonymousAnalytics(email, unsubhash, success=False):
   if results:
     if int(results[0][1]) == 0 and success:
       commit('update anonymousanalytics set success=1 where unsubhash=%s', (unsubhash))
+    else:
+      log.info('unsub hash is still failing, do not update analytics', unsubhash)
   else:
     commit('insert into anonymousanalytics (emailhash, unsubhash, success, stamp) values (%s, %s, %s, %s)', (digest, unsubhash, str(success), now))
   
@@ -107,6 +109,7 @@ def handleDB(ll):
     browser = selenium.refreshBrowser(browser)
   for ss in origSet:
     commit('delete from unsubs where hash=%s', ss)
+  browser.quit()
 
 def unsubscribe(unsub, browser):
   return selenium.processPage(unsub,browser)
