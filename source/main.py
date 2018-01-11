@@ -43,7 +43,7 @@ def refreshList():
   return l
 
 def getFive():
-  results = fetch('select url, email, hash from unsubs limit 5')
+  results = fetch('select url, email, hash from unsubs order by RAND() limit 5')
   s = set()
   for r in results:
     s.add(str(r[2]))
