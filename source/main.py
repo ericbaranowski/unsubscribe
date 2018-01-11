@@ -112,7 +112,12 @@ def handleDB(ll):
   browser.quit()
 
 def unsubscribe(unsub, browser):
-  return selenium.processPage(unsub,browser)
+  try:
+    a = selenium.processPage(unsub,browser)
+    return a
+  except Exception as e:
+    log.info(e)
+  return False
   
 def mainMaster(wipe=False):
   log.tid = newHash()

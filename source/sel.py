@@ -328,9 +328,13 @@ def clickRecursive(elem):
   return False
 
 def refreshBrowser(browser):
-  browser.get('https://www.google.com/search?q=check+browser')
-  time.sleep(pageDelay)
-  body = getPageBody(browser).lower()
+  body = ''
+  try:
+    browser.get('https://www.google.com/search?q=check+browser')
+    time.sleep(pageDelay)
+    body = getPageBody(browser).lower()
+  except Exception as e:
+    log.warn('refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
     browser.quit()
     browser = getBrowser()
