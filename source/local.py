@@ -7,6 +7,43 @@ import sql
 from sql import fetch
 
 
+import sel
+
+class Uns:
+  pass
+  
+def doUns():
+  from selenium import webdriver
+  from selenium.webdriver.common.keys import Keys
+  print '1'
+  driver = webdriver.Firefox()
+  print '2'
+  driver.get("http://www.python.org")
+  print '3'
+  assert "Python" in driver.title
+  print '4'
+  return
+  import time
+  uns = Uns()
+  uns.url='https://click.message.fedex.com/?qs=a2d39ce5274aae028bee17e957371943e3fd281bf03dd1f0a3d9f21d7485636a7c3adb30cca5f54411b2950e842dfe89047581c60e19e136'
+  uns.email='william.k.dvorak@gmail.com'
+  uns.hashh = 'default'
+  browser = sel.getBrowserNoDisplay()
+  print 'hre22',browser
+  print sel.processPage(uns,browser)
+  time.sleep(30)
+  browser = sel.getBrowser()
+  #browser = sel.getBrowserNoDisplay()
+  print 'hre',browser
+  print sel.processPage(uns,browser)
+  browser = sel.getBrowserNoDisplay()
+  print 'hre22',browser
+  print sel.processPage(uns,browser)
+  print 'done'
+
+doUns()
+
+
 def anal(email):
   digest = hashEmail(email)
   results = fetch('select count(*) from anonymousanalytics where emailhash=%s', digest)

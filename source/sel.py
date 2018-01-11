@@ -8,7 +8,6 @@
 #os.environ["PATH"] += os.pathsep +  path
 
 import time
-from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -30,8 +29,16 @@ js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
 def getBrowser():
   log.info('getting browser')
+  from pyvirtualdisplay import Display
   display = Display(visible=0, size=(80, 60))
   display.start()
+  browser = webdriver.Firefox()
+  #browser.implicitly_wait(1)
+  log.info('got browser')
+  return browser, display
+    
+def getBrowserNoDisplay():
+  log.info('getting browser')
   browser = webdriver.Firefox()
   #browser.implicitly_wait(1)
   log.info('got browser')
@@ -287,9 +294,9 @@ def forms(browser, email):
         continue
       if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
         time.sleep(delay)
-        funn = aTag.submit
-        if aTag.get_attribute('onclick'):
-          funn = aTag.click
+        funn = child.submit
+        if child.get_attribute('onclick'):
+          funn = child.click
         if doFun(funn):
           log.info('subbimmets a tag')
           return browser
@@ -327,7 +334,7 @@ def clickRecursive(elem):
     return doFun(child.click)
   return False
 
-def refreshBrowser(browser):
+def refreshBrowser(browser,display):
   body = ''
   try:
     browser.get('https://www.google.com/search?q=check+browser')
@@ -337,8 +344,10 @@ def refreshBrowser(browser):
     log.warn('refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
     browser.quit()
-    browser = getBrowser()
-  return browser
+    display.popen.kill()
+    time.sleep(2)
+    browser,display = getBrowser()
+  return browser,display
   
             
   
