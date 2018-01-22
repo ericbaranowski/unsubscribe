@@ -35,14 +35,8 @@ class UnSub:
   def __repr__(self):
     return self.url + "  " + self.email
 
-def refreshList():
-  results = fetch('select url, email, hash from unsubs')
-  l = list()
-  for r in results:
-    l.append(UnSub(r[0], r[1], r[2]))
-  return l
-
 def getFive():
+  # random order in case there's two slaves, don't likely grab the same unsub in high volume
   results = fetch('select url, email, hash from unsubs order by RAND() limit 5')
   s = set()
   for r in results:
@@ -82,15 +76,8 @@ def addEmailToSqlAnalytics(uns, success=False):
   anonymousAnalytics(email, hashh, success)
   if url:
     fullAnalytics(email, url, success)
-    
   
-def deleteEntry(unsub, alll=False):
-  if alll:
-    commit('delete from unsubs where hash=%s',(unsub.hashh))
-  else:
-    commit('delete from unsubs where url=%s and email=%s',(unsub.url, unsub.email))
-  
-def handleDB(ll):
+def handleDB():
   ll, origSet = getFive()
   log.info(ll)
   if not ll:
@@ -110,11 +97,12 @@ def handleDB(ll):
   for ss in origSet:
     commit('delete from unsubs where hash=%s', ss)
   browser.quit()
+  display.popen.kill()
 
 def unsubscribe(unsub, browser):
   try:
-    a = selenium.processPage(unsub,browser)
-    return a
+    ans = selenium.processPage(unsub,browser)
+    return ans
   except Exception as e:
     log.info(e)
   return False
@@ -124,23 +112,15 @@ def mainMaster(wipe=False):
   if wipe:
     schema.wipe()
   mail =  gmail.connect()
-  log.info('print analytics total, successful, all broken')
-  results = fetch('select count(*) from analytics')
-  log.info('total', results)
-  results = fetch('select count(*) from analytics where success=1')
-  log.info('successful', results)
-  results = fetch('select email, url from analytics where success=0')
-  log.info(results)
-
+  
   rr = random.randint(20,21)
   time.sleep(rr)
   it = 0
   while True:
     it += 1
     log.info('reading email')
-    uss = None
     try:
-      uss = gmail.readEmailFromGmail(mail)
+      gmail.readEmailFromGmail(mail)
     except Exception as e:
       log.info('exception', e)
       if it % 2 == 0:
@@ -188,29 +168,16 @@ def printAnalytics():
     
 def mainSlave():
   log.tid = newHash()
-  log.info('print analytics total, successful, all broken')
-  results = fetch('select count(*) from analytics')
-  log.info('total', results)
-  results = fetch('select count(*) from analytics where success=1')
-  log.info('successful', results)
-  results = fetch('select email, url from analytics where success=0')
-  log.info(results)
+  # stagger when the slaves process the db
   rr = random.randint(20,40)
   time.sleep(rr)
   it = 0
   while True:
     it += 1
-    uss = None
-    log.info('handling unsubs')
-    results = fetch('select * from unsubs')
-    log.info(results)
-    results = fetch('select * from readmail')
-    log.info(results)
     try:
-      handleDB(uss)
+      handleDB()
     except Exception as e:
       log.info('exception', e)
     sleeplen = 20
     log.info('sleeping for '+str(sleeplen))
     time.sleep(sleeplen)
-    

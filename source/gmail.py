@@ -1,5 +1,3 @@
-# https://stackoverflow.com/questions/1777264/using-python-imaplib-to-delete-an-email-from-gmail
-
 import imaplib
 from sql import commit
 from sql import fetch
@@ -34,11 +32,6 @@ class UnSub:
     self.hashh = hashh
   def __repr__(self):
     return self.url + "  " + self.email
-
-def writeFile(s):
-  f = open('email.html','w')
-  f.write(s)
-  f.close()
 
 def getAddress(msg):
   fromAddressFull = str(msg['from'])
@@ -128,13 +121,10 @@ def processOne(mail, i, actuallyCommit=False):
     body = body.replace('=3D','=')
     
     candidates = getCandidates(body)
-    ccs = list()
     for c in candidates:
       log.info('candidate', fromAddress, c)
       if actuallyCommit:
         commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))
-        ccs.append(UnSub(c, fromAddress, hashh))
-    return ccs
 
 def connect():
   mail = None
@@ -162,18 +152,15 @@ def readEmailFromGmail(mail):
     now = now[1:]
   log.info('(SINCE %s)' % now)
   unused, data = mail.search(None, '(SINCE %s)' % now)
-
-    
+  
   if not data:
     log.info('no new emails %s', str(mail))
     return
-
-  uss = list()
   mail_ids = data[0]
   
   if not mail_ids:
-    return uss
-  id_list = mail_ids.split()   
+    return
+  id_list = mail_ids.split()
   first_email_id = int(id_list[0])
   latest_email_id = int(id_list[-1])
   
@@ -190,13 +177,10 @@ def readEmailFromGmail(mail):
     if int(i) in read:
       actuallyCommit=False
       continue
-    candidates = processOne(mail, i, actuallyCommit)
-    uss.extend(candidates)
+    processOne(mail, i, actuallyCommit)
     processed.add(i)
   
   log.info('write read in db')
   for i in processed:
     commit('insert into readmail (email) values (%s)', i)
-  return uss
     
-#readEmailFromGmail()

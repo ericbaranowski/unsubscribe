@@ -11,3 +11,4 @@ commitment statement
 test all other email samples
 build website and buy domain
 
+allow each docker process to quit gracefully before restarting

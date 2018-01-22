@@ -1,5 +1,7 @@
 import datetime
 from datetime import timedelta
+import os
+
 def hashEmail(a):
   return 'aoeu'
 
@@ -7,7 +9,7 @@ import sql
 from sql import fetch
 
 
-import sel
+#import sel
 
 class Uns:
   pass
@@ -33,7 +35,6 @@ def doUns():
   print sel.processPage(uns,browser)
   time.sleep(30)
   browser = sel.getBrowser()
-  #browser = sel.getBrowserNoDisplay()
   print 'hre',browser
   print sel.processPage(uns,browser)
   browser = sel.getBrowserNoDisplay()
@@ -41,8 +42,26 @@ def doUns():
   print sel.processPage(uns,browser)
   print 'done'
 
-doUns()
 
+def allUnsuccessful():
+  results = fetch('select email, url from analytics where success=0')
+  ss = dict()
+  for r in results:
+    ss[str(r[1])] = str(r[0])
+  i = 0
+  low = 200
+  high = low+10
+  print len(ss.keys())
+  for k,v in ss.iteritems():
+    if i > low:
+      os.system('open '+k)
+      print v
+      print k
+    i+=1
+    if i > high:
+      break
+    
+allUnsuccessful()
 
 def anal(email):
   digest = hashEmail(email)

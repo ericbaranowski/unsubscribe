@@ -1,29 +1,16 @@
-
-#path = '/Users/williamdvorak/Desktop/unsubscribe/git/'
-
-#import sys
-#sys.path.insert(0, path)
-##print sys.path
-#import os
-#os.environ["PATH"] += os.pathsep +  path
-
 import time
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
 import random
 import log
 
-from selenium.webdriver.common.keys import Keys
 delay = .5
 pageDelay = 5
 
-checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out', 'not interested']
+checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out', 'not interested', 'no email']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update', 'don\'t send me any', 'don\'t send any', 'stop sending', 'confirm', 'do not email', 'block all emails', 'permanently remove']
-radioPositives = ['all', 'none', 'complete']
-confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have removed', 'request has been processed', 'request processed', 'unsubscribe confirmation']
-shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 'now unsubscribed', 'unsubscribe successful', 'successfully removed', 'unsubscribe confirmation','unsubscribed successfully', 'been unsubscribed']
+radioPositives = ['all', 'none', 'complete','no email']
+shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 'now unsubscribed', 'unsubscribe successful', 'successfully removed', 'unsubscribe confirmation','unsubscribed successfully', 'been unsubscribed', 'have been unsubscribe','email unsubscribe', 'preferences have been update', 'sorry to see you go','you\'re unsubscribe','you are unsubscribe', 'unsubscribed now']
+confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have removed', 'request has been processed', 'request processed', 'unsubscribe confirm', 'has been remove', 'have been remove','deleted'] + shortConfirmPositives
 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
@@ -33,21 +20,19 @@ def getBrowser():
   display = Display(visible=0, size=(80, 60))
   display.start()
   browser = webdriver.Firefox()
-  #browser.implicitly_wait(1)
   log.info('got browser')
   return browser, display
     
 def getBrowserNoDisplay():
   log.info('getting browser')
   browser = webdriver.Firefox()
-  #browser.implicitly_wait(1)
   log.info('got browser')
   return browser
 
 def getPageBody(browser):
-  aa = browser.execute_script(js_code)
-  if aa:
-    return aa
+  body = browser.execute_script(js_code)
+  if body:
+    return body
   return browser.page_source
 
 def processPage(unsub, browser):
@@ -61,8 +46,6 @@ def processPage(unsub, browser):
       if not body:
         log.info('did not get a confirm page')
         return False
-      
-      #log.info('got result', body)
       body = body.lower()
       if  any(pos in body for pos in confirmPositives):
         return True
@@ -71,13 +54,6 @@ def processPage(unsub, browser):
   except Exception as e:
     log.info('exception'+ str(e))
   return False
-
-#def click(child):
-# try:
-#   child.click()
-#   return browser
-# except Exception as e:
-#   log.info('exception', e
 
 def getText(child):
   text = child.text.lower()
@@ -100,9 +76,6 @@ def getText(child):
   if not text or len(text) < 3:
     return None
   return text
-  
-def getRadioName(radio):
-  return radio.get_attribute('name')
   
 def process(unsub, browser):
   url = unsub.url
@@ -164,7 +137,7 @@ def selects(browser):
           clicked = True
           log.info('clicked select')
     if not clicked and children:
-      if doFun(children[-1].click): # click the last option, usually unsub all
+      if doFun(children[-1].click):  # click the last option, usually unsub all
         log.info('clicked select defaulted last')
 
 def radios(browser, unused):
@@ -173,9 +146,9 @@ def radios(browser, unused):
   currentList = []
   currentName = None
   if radios:
-    currentName = getRadioName(radios[0])
+    currentName = radios[0].get_attribute('name')
   for radio in radios:
-    name = getRadioName(radio)
+    name = radio.get_attribute('name')
     if name != currentName:
       lists.append(currentList)
       currentList = []
@@ -194,7 +167,7 @@ def radios(browser, unused):
         if doFun(l[-1].click): # click the last option, usually unsub all
           log.info('clicked radio defaulted last')
 
-def ass(browser, unused):
+def atags(browser, unused):
   aTags = browser.find_elements_by_xpath("//a")
   aTags = reversed(aTags)
   for aTag in aTags:
@@ -203,7 +176,6 @@ def ass(browser, unused):
       continue
     if not aTag.is_displayed() or not aTag.is_enabled():
       continue
-    #log.info(aTag.tag_name, text, aTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       funn = aTag.submit
@@ -223,7 +195,6 @@ def buttons(browser, unused):
       continue
     if not buttonTag.is_displayed() or not buttonTag.is_enabled():
       continue
-    #log.info(buttonTag.tag_name, text, buttonTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       if doFun(buttonTag.click):
@@ -240,7 +211,6 @@ def onclicks(browser, unused):
       continue
     if not clickTag.is_displayed() or not clickTag.is_enabled():
       continue
-    #log.info(clickTag.tag_name, text, clickTag.get_attribute('type'))
     if any(pos in text for pos in buttonPositives):
       time.sleep(delay)
       jss = clickTag.get_attribute('onclick')
@@ -253,12 +223,11 @@ def forms(browser, email):
   forms = reversed(forms)  
   
   for form in forms:
-    children = form.find_elements_by_xpath(".//*")
+    children = form.find_elements_by_xpath(".//input")
     for child in children:
       text = getText(child)
       if not child.is_displayed() or not child.is_enabled():
         continue
-      #log.info(child.tag_name, text, child.get_attribute('type'))  
       if child.tag_name == "input":
         if child.get_attribute('type') == "text":
           doFun(child.clear)
@@ -270,6 +239,9 @@ def forms(browser, email):
           if any(pos in text for pos in checkboxPositives) and not child.is_selected():
             if doFun(child.click):
               log.info('clicked checkbox')
+          elif not any(pos in text for pos in checkboxPositives) and child.is_selected():
+            if doFun(child.click):
+              log.info('unclicked checkbox')
           continue
         if child.get_attribute('type') == "button" and any(pos in text for pos in buttonPositives):
           time.sleep(delay)
@@ -285,6 +257,9 @@ def forms(browser, email):
           time.sleep(delay)
           doFun(child.submit)
           return browser
+    children = form.find_elements_by_xpath(".//button")
+    for child in children:
+      text = getText(child)
       if not text:
         continue
       if child.tag_name == "button" and any(pos in text for pos in buttonPositives):
@@ -292,19 +267,22 @@ def forms(browser, email):
         if doFun(child.submit):
           return browser
         continue
+    children = form.find_elements_by_xpath(".//a")
+    for child in children:
+      text = getText(child)
       if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
         time.sleep(delay)
         funn = child.submit
         if child.get_attribute('onclick'):
           funn = child.click
         if doFun(funn):
-          log.info('subbimmets a tag')
+          log.info('submits a tag')
           return browser
         continue
   return None
 
 def processFrame(browser, email):  
-  funs = [radios, forms, ass, buttons, onclicks]
+  funs = [radios, forms, atags, buttons, onclicks]
   for ff in funs:
     result = None
     try:
@@ -320,7 +298,6 @@ def subbbmit():
   submitTags = browser.find_elements_by_xpath("//*[@onsubmit]")
   submitTags = reversed(submitTags)
   for submitTag in submitTags:
-    #log.info(submitTag.tag_name, submitTag.get_attribute('type'))
     time.sleep(delay)
     jss = submitTag.get_attribute('onsubmit')
     browser.execute_script(jss)
@@ -330,8 +307,9 @@ def clickRecursive(elem):
   children = elem.find_elements_by_xpath(".//*")
   children = [elem] + children
   for child in children:
-    #log.info(child.tag_name, getText(child))
-    return doFun(child.click)
+    ans = doFun(child.click)
+    if ans:
+      return True
   return False
 
 def refreshBrowser(browser,display):
@@ -348,15 +326,4 @@ def refreshBrowser(browser,display):
     time.sleep(2)
     browser,display = getBrowser()
   return browser,display
-  
-            
-  
-''' code to consider fixing (grammerly)
-  
-  
-  <span class="_ada80c-title _ada80c-titleNormal _ada80c-pointer" data-reactid="31">Unsubscribe From All Email Lists</span><span class="_ada80c-sub _ada80c-subNormal" data-reactid="32">You will still receive important transactional and billing-related emails</span></div><div class="_74305d-button _610808-button" data-qa="btnUpdate" data-reactid="33">Update my preferences</div>
-  
-  
-'''
-  
-  
+

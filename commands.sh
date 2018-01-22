@@ -1,3 +1,4 @@
+sudo su
 cd unsubscribe; git pull; cd ..
 
 docker build -t master .
