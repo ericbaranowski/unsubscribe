@@ -81,6 +81,9 @@ def handleDB():
   ll, origSet = getFive()
   log.info(ll)
   if not ll:
+    time.sleep(120)
+    import os
+    os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
     return
   browser,display = selenium.getBrowser()
   for uns in ll:
