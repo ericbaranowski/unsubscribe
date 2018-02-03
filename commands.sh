@@ -28,3 +28,8 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 * */2 * * * sudo gcloud compute --project "hosting-2718" instances stop --zone "us-east1-d" "unsub"; sudo gcloud compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub"
+
+
+cd unsubscribe; git pull; cd ..
+cp unsubscribe/Dockerfile_test .
+docker build -f Dockerfile_test -t test .
