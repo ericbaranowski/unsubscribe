@@ -76,14 +76,20 @@ def addEmailToSqlAnalytics(uns, success=False):
   anonymousAnalytics(email, hashh, success)
   if url:
     fullAnalytics(email, url, success)
-  
+
+def turnOff():
+  import os
+  log.info('done sleeping')
+  os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
+  log.info('called stop')
+
 def handleDB():
   ll, origSet = getFive()
   log.info(ll)
   if not ll:
+    log.info('empty turning off')
     time.sleep(120)
-    import os
-    os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
+    turnOff()
     return
   browser,display = selenium.getBrowser()
   for uns in ll:
