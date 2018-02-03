@@ -33,3 +33,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 cd unsubscribe; git pull; cd ..
 cp unsubscribe/Dockerfile_test .
 docker build -f Dockerfile_test -t test .
+
+docker run -t test
