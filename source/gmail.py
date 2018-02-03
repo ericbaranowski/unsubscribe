@@ -1,3 +1,4 @@
+#https://support.google.com/accounts/answer/185833
 import imaplib
 from sql import commit
 from sql import fetch
