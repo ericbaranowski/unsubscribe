@@ -43,7 +43,7 @@ def getFive():
     s.add(str(r[2]))
   origSet = s
   if not s:
-    return []
+    return [], origSet
   s = str(list(s)).replace('[','(').replace(']',')')
   results = fetch('select url, email, hash from unsubs where hash in ' + s)
   l = list()
@@ -181,6 +181,7 @@ def mainSlave():
       handleDB()
     except Exception as e:
       log.info('exception', e)
-    sleeplen = 20
-    log.info('sleeping for '+str(sleeplen))
-    time.sleep(sleeplen)
+    rr = random.randint(20,40)
+    time.sleep(rr)
+    log.info('sleeping for '+str(rr))
+    time.sleep(rr)
