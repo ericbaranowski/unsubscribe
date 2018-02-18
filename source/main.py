@@ -85,7 +85,6 @@ def turnOff():
 
 def handleDB():
   ll, origSet = getFive()
-  log.info(ll)
   if not ll:
     log.info('empty turning off')
     time.sleep(120)
@@ -93,10 +92,10 @@ def handleDB():
     return
   browser,display = selenium.getBrowser()
   for uns in ll:
-    log.info(uns)
+    log.info('hashh',uns.hashh)
     res = unsubscribe(uns, browser)
     if not res:
-      log.info('failed confirmation', uns)
+      log.info('failed confirmation', uns.hashh)
       addEmailToSqlAnalytics(uns,False)
     else:
       log.info('confirmed unsub')
