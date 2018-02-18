@@ -121,8 +121,6 @@ def mainMaster(wipe=False):
     schema.wipe()
   mail =  gmail.connect()
   
-  rr = random.randint(20,21)
-  time.sleep(rr)
   it = 0
   while True:
     it += 1
@@ -177,7 +175,7 @@ def printAnalytics():
 def mainSlave():
   log.tid = newHash()
   # stagger when the slaves process the db
-  rr = random.randint(20,40)
+  rr = 60
   time.sleep(rr)
   it = 0
   while True:
