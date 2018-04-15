@@ -23,7 +23,10 @@ ENV PATH="/app:${PATH}"
 COPY unsubscribe/geckodriver.sh /app/geckodriver.sh
 RUN sh /app/geckodriver.sh
 
+RUN pip install --ignore-installed six
+RUN pip install --ignore-installed urllib3
 RUN pip install --upgrade pip
+RUN pip install --upgrade pip==8.1.2
 COPY unsubscribe/requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
