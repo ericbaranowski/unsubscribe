@@ -1,5 +1,6 @@
 sudo su
 cd unsubscribe; git pull; cd ..
+cp unsubscribe/Dockerfile* .
 
 docker build -t master .
 docker build -f Dockerfile_slave -t slave .
