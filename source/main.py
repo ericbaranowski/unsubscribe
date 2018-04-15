@@ -83,9 +83,15 @@ def turnOff():
   os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
   log.info('called stop')
 
+def removeDockerCruft():
+  import os
+  os.system('rm -rf /var/lib/docker/aufs')
+  log.info('docker cruft deleted')
+
 def handleDB():
   ll, origSet = getFive()
   if not ll:
+    removeDockerCruft()
     log.info('empty turning off')
     time.sleep(120)
     turnOff()
