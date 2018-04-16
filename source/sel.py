@@ -5,6 +5,7 @@ import log
 
 delay = .5
 pageDelay = 5
+pageTimeout = 30
 
 checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out', 'not interested', 'no email']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update', 'don\'t send me any', 'don\'t send any', 'stop sending', 'confirm', 'do not email', 'block all emails', 'permanently remove']
@@ -17,12 +18,11 @@ js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
 def getBrowser():
   log.info('getting browser')
   from pyvirtualdisplay import Display
-  display = Display(visible=0, size=(80, 60))
+  display = Display(visible=0, size=(800, 600))
   display.start()
   browser = webdriver.Firefox()
   log.info('got browser')
   browser.implicitly_wait(10)
-  browser.set_page_load_timeout(30)
   return browser, display
     
 def getBrowserNoDisplay():
@@ -82,6 +82,7 @@ def getText(child):
 def process(unsub, browser):
   url = unsub.url
   email = unsub.email
+  browser.set_page_load_timeout(pageTimeout)
   browser.get(url)
   time.sleep(pageDelay)
   
@@ -95,6 +96,7 @@ def process(unsub, browser):
   if ans:
     return ans
 
+  browser.set_page_load_timeout(pageTimeout)
   browser.get(url)
   time.sleep(pageDelay)
   frames = browser.find_elements_by_tag_name('iframe')
@@ -109,6 +111,7 @@ def process(unsub, browser):
     if ans:
       return ans
     # refresh frames list
+    browser.set_page_load_timeout(pageTimeout)
     browser.get(url)
     time.sleep(pageDelay)
     frames = browser.find_elements_by_tag_name('iframe')
@@ -317,6 +320,7 @@ def clickRecursive(elem):
 def refreshBrowser(browser,display):
   body = ''
   try:
+    browser.set_page_load_timeout(pageTimeout)
     browser.get('https://www.google.com/search?q=check+browser')
     time.sleep(pageDelay)
     body = getPageBody(browser).lower()

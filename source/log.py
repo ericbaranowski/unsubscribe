@@ -17,6 +17,19 @@ if cloudLog:
     pass
 
 def log(entry, bucket='main', severity='INFO'):
+
+  try:
+    exc_type, exc_obj, exc_tb = sys.exc_info()
+    entry += ' ' + str(exc_type)
+    if not exc_type:
+      pass
+    else:
+      fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+      entry +=  ' '+str(fname)+' '+ str(exc_tb.tb_lineno)
+      traceback.print_tb(exc_tb)
+      traceback.print_stack()
+  except Exception as e:
+    entry += ' bad exc_info' + str(e)
   if logger:
     try:
       logger.log_text(str(entry) + tid, severity=severity)
@@ -39,6 +52,7 @@ def warn(*entry):
 
 def error(*entry):
   log(str(entry), 'main', 'ERROR')
+  
   
 
 #logging_client = logging.Client()
