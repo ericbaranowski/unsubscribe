@@ -42,5 +42,5 @@ RUN echo "$(cat /app/main.py)\nprintAnalytics()" > /app/main.py
 
 ENTRYPOINT ["python"]
 
-CMD ["analytics.py"]
+CMD ["local.py"]
 #CMD ["main.py"]

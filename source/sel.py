@@ -21,6 +21,8 @@ def getBrowser():
   display.start()
   browser = webdriver.Firefox()
   log.info('got browser')
+  browser.implicitly_wait(10)
+  browser.set_page_load_timeout(30)
   return browser, display
     
 def getBrowserNoDisplay():

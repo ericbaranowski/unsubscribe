@@ -61,16 +61,7 @@ def allUnsuccessful():
     if i > high:
       break
     
-#allUnsuccessful()
-
-def getProblem():
-  hashh = 'lrnbgg19'
-  results = fetch('select * from unsubs where hash="lrnbgg19"')
-  print results
-  results = fetch('select count(*) from unsubs ')
-  print results
-  
-getProblem()
+allUnsuccessful()
 
 def anal(email):
   digest = hashEmail(email)
