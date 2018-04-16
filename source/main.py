@@ -182,6 +182,7 @@ def mainSlave():
   log.tid = newHash()
   # stagger when the slaves process the db
   rr = 60
+  log.info('slave sleeping for '+str(rr))
   time.sleep(rr)
   it = 0
   while True:
