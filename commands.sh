@@ -5,6 +5,7 @@ cp unsubscribe/Dockerfile* .
 docker build -t master .
 docker build -f Dockerfile_slave -t slave .
 docker build -f Dockerfile_analytics -t analytics .
+docker build -f Dockerfile_local -t local .
 
 docker rm -f $(docker ps -aq); docker run --restart always -t master   &
 docker run --restart always -t slave  &
