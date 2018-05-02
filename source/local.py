@@ -96,9 +96,11 @@ def deleteReadEmail17days():
   results = fetch('select email from readmail')
   print results[-10:]
   
-  start = 100000
+  start = 6000
   for r in results:
-    #commit('delete from readmail where email=%s',str(start))
+    commit('delete from readmail where email=%s',str(start))
     start += 1
+  results = fetch('select email from readmail')
+  print results[-10:]
   
 deleteReadEmail17days()
