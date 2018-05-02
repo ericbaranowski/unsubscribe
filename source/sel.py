@@ -50,8 +50,10 @@ def processPage(unsub, browser):
         return False
       body = body.lower()
       if  any(pos in body for pos in confirmPositives):
+        log.info('confirm by confirmPositives')
         return True
       log.info('no confirmed unsub,', body[:50])
+    log.info('browser was false')
     return False
   except Exception as e:
     log.info('exception'+ str(e))
@@ -89,6 +91,7 @@ def process(unsub, browser):
   body = getPageBody(browser)
   body = body.lower()
   if any(pos in body for pos in shortConfirmPositives):
+    log.info('short positive confirm')
     return 'done'
 
   log.info('main frame')
