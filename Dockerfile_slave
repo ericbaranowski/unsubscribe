@@ -47,6 +47,6 @@ ENV PYTHONPATH /app/
 
 RUN echo "$(cat /app/main.py)\nmainSlave()" > /app/main.py
 
-#ENTRYPOINT ["python"]
+ENTRYPOINT ["python"]
 
-#CMD ["main.py"]
+CMD ["main.py"]
