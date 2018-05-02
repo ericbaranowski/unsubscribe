@@ -5,7 +5,7 @@ import log
 
 delay = .5
 pageDelay = 5
-pageTimeout = 30*1000
+pageTimeout = 30
 
 checkboxPositives = ['remove', 'stop', 'unsub', 'off', 'opt out', 'not interested', 'no email']
 buttonPositives = ['remove', 'stop', 'unsub', 'go', 'submit', 'click', 'opt out', 'yes', 'update', 'don\'t send me any', 'don\'t send any', 'stop sending', 'confirm', 'do not email', 'block all emails', 'permanently remove']
