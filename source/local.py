@@ -7,6 +7,7 @@ def hashEmail(a):
 
 import sql
 from sql import fetch
+from sql import commit
 
 
 #import sel
@@ -70,7 +71,7 @@ def getProblem():
   results = fetch('select count(*) from unsubs ')
   print results
   
-getProblem()
+#getProblem()
 
 def anal(email):
   digest = hashEmail(email)
@@ -90,3 +91,14 @@ def anal(email):
     results = fetch('select count(*) from anonymousanalytics where success=1 and stamp > %s', now)
     successful = results[0][0]
   return [str(int(successful)), str(int(total)-int(successful))]
+  
+def deleteReadEmail17days():
+  results = fetch('select email from readmail')
+  print results[-10:]
+  
+  start = 100000
+  for r in results:
+    #commit('delete from readmail where email=%s',str(start))
+    start += 1
+  
+deleteReadEmail17days()
