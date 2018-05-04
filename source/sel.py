@@ -1,6 +1,7 @@
 import time
 import random
 import log
+import signal
 
 delay = .5
 pageDelay = 3
@@ -13,6 +14,31 @@ shortConfirmPositives = ['successfully unsubscribed', 'confirmed unsubscribed', 
 confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have removed', 'request has been processed', 'request processed', 'unsubscribe confirm', 'has been remove', 'have been remove','deleted'] + shortConfirmPositives
 
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
+
+getDone = False
+
+def handler(signum, frame):
+  # YUCK -- native page load timeout in selenium is garbage and doesnt work
+  global getDone
+  if getDone:
+    return
+  log.warn('browser timed out')
+  raise Exception('browser timed out')
+
+def browserGetPage(browser,url): 
+  signal.signal(signal.SIGALRM, handler)
+  signal.alarm(pageTimeout)
+  try:
+    global getDone
+    getDone = False
+    browser.get(url)
+    getDone = True
+    time.sleep(pageDelay)
+  except Exception as e:
+    log.warn(e)
+    
+  return browser
+    
   
 def getBrowser():
   # import subprocess
@@ -86,9 +112,7 @@ def getText(child):
 def process(unsub, browser):
   url = unsub.url
   email = unsub.email
-  browser.set_page_load_timeout(pageTimeout)
-  browser.get(url)
-  time.sleep(pageDelay)
+  browser = browserGetPage(browser,url)
   
   body = getPageBody(browser)
   body = body.lower()
@@ -101,9 +125,9 @@ def process(unsub, browser):
   if ans:
     return ans
 
-  browser.set_page_load_timeout(pageTimeout)
-  browser.get(url)
-  time.sleep(pageDelay)
+
+  browser = browserGetPage(browser,url)
+  
   frames = browser.find_elements_by_tag_name('iframe')
   frames = list(reversed(frames))
   numFrames = len(frames)
@@ -116,9 +140,8 @@ def process(unsub, browser):
     if ans:
       return ans
     # refresh frames list
-    browser.set_page_load_timeout(pageTimeout)
-    browser.get(url)
-    time.sleep(pageDelay)
+
+    browser = browserGetPage(browser,url)
     frames = browser.find_elements_by_tag_name('iframe')
     frames = list(reversed(frames))
   return ans
@@ -330,9 +353,8 @@ def closeBrowser(browser,display):
 def refreshBrowser(browser,display):
   body = ''
   try:
-    browser.set_page_load_timeout(pageTimeout)
-    browser.get('https://www.google.com/search?q=check+browser')
-    time.sleep(pageDelay)
+
+    browser = browserGetPage(browser,url)
     body = getPageBody(browser).lower()
   except Exception as e:
     log.warn('refreshing browser', str(e))

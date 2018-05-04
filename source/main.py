@@ -179,6 +179,7 @@ def printAnalytics():
   log.info(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
     
 def mainSlave():
+  log.info('starting slave')
   log.tid = newHash()
   it = 0
   while True:
