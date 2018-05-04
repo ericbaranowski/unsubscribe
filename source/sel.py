@@ -25,9 +25,10 @@ def getBrowser():
   from selenium import webdriver
   display = Display(visible=0, size=(800, 600))
   display.start()
-  capabilities = webdriver.DesiredCapabilities().FIREFOX
-  capabilities["marionette"] = False
-  browser = webdriver.Firefox(capabilities=capabilities)
+  # capabilities = webdriver.DesiredCapabilities().FIREFOX
+  # capabilities["marionette"] = False
+  # browser = webdriver.Firefox(capabilities=capabilities)
+  browser = webdriver.Firefox()
   log.info('got browser')
   #browser.implicitly_wait(10)
   return browser, display
