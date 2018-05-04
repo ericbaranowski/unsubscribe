@@ -353,7 +353,7 @@ def closeBrowser(browser,display):
 def refreshBrowser(browser,display):
   body = ''
   try:
-
+    url = 'https://www.google.com/search?q=check+browser'
     browser = browserGetPage(browser,url)
     body = getPageBody(browser).lower()
   except Exception as e:
