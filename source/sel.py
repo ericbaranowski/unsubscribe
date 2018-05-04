@@ -19,6 +19,7 @@ def getBrowser():
   try:
     os.system('rm -rf /tmp')
   except Exception as e:
+    log.info('got here')
     log.info(e)
   log.info('getting browser')
   from pyvirtualdisplay import Display
