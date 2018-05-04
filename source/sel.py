@@ -83,8 +83,18 @@ def getPageBody(browser):
     log.warn(e)
     body = None
   if body:
-    return body
-  return browser.page_source
+    return browser,  body
+  body = None
+  try:
+    body = browser.page_source
+  except Exception as e:
+    log.warn('exception getting page source')
+    log.warn(e)
+    body = None
+  if not body:
+    closeBrowser(browser)
+    browser = getBrowser()
+  return browser, body
 
 def processPage(unsub, browser):
   try:
@@ -93,7 +103,7 @@ def processPage(unsub, browser):
       return True
     if browser:
       time.sleep(pageDelay)
-      body = getPageBody(browser)
+      browser, body = getPageBody(browser)
       if not body:
         log.info('did not get a confirm page')
         return False
@@ -135,7 +145,7 @@ def process(unsub, browser):
   email = unsub.email
   browser = browserGetPage(browser,url)
   
-  body = getPageBody(browser)
+  browser, body = getPageBody(browser)
   body = body.lower()
   if any(pos in body for pos in shortConfirmPositives):
     log.info('short positive confirm')
@@ -381,7 +391,8 @@ def refreshBrowser(browser):
   try:
     url = 'https://www.google.com/search?q=check+browser'
     browser = browserGetPage(browser,url)
-    body = getPageBody(browser).lower()
+    browser, body = getPageBody(browser)
+    body = body.lower()
   except Exception as e:
     log.warn('exception refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
