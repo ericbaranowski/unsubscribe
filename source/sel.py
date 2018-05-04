@@ -15,12 +15,11 @@ confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have rem
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
 def getBrowser():
-  import os
-  try:
-    os.system('rm -rf /tmp')
-  except Exception as e:
-    log.info('got here')
-    log.info(e)
+  # import subprocess
+  # try:
+  #   subprocess.call(['rm -rf /tmp'])
+  # except:
+  #   log.info('got here')
   log.info('getting browser')
   from pyvirtualdisplay import Display
   from selenium import webdriver
