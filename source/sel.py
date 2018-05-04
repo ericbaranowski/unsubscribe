@@ -75,7 +75,13 @@ def getBrowser():
   return browser
 
 def getPageBody(browser):
-  body = browser.execute_script(js_code)
+  body = None
+  try:
+    body = browser.execute_script(js_code)
+  except Exception as e:
+    log.warn('exception executing js')
+    log.warn(e)
+    body = None
   if body:
     return body
   return browser.page_source
