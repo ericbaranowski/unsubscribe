@@ -20,7 +20,9 @@ def getBrowser():
   from pyvirtualdisplay import Display
   display = Display(visible=0, size=(800, 600))
   display.start()
-  browser = webdriver.Firefox()
+  capabilities = webdriver.DesiredCapabilities().FIREFOX
+  capabilities["marionette"] = False
+  browser = webdriver.Firefox(capabilities=capabilities)
   log.info('got browser')
   #browser.implicitly_wait(10)
   return browser, display
