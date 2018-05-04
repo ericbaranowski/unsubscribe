@@ -9,7 +9,13 @@ import sql
 from sql import fetch
 from sql import commit
 
-
+def countPending():
+  results = fetch('select count(*) from unsubs')
+  print results
+  results = fetch('select count(hash) from unsubs')
+  print results
+  
+countPending()
 #import sel
 
 class Uns:
@@ -103,4 +109,4 @@ def deleteReadEmail17days():
   results = fetch('select email from readmail')
   print results[-10:]
   
-deleteReadEmail17days()
+#deleteReadEmail17days()
