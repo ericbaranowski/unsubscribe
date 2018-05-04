@@ -323,7 +323,7 @@ def clickRecursive(elem):
   return False
 
 def closeBrowser(browser,display):
-  browser.quit()
+  browser.close()
   display.stop()
 
 def refreshBrowser(browser,display):
