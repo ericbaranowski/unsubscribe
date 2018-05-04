@@ -325,6 +325,7 @@ def clickRecursive(elem):
 def closeBrowser(browser,display):
   browser.close()
   display.stop()
+  time.sleep(2)
 
 def refreshBrowser(browser,display):
   body = ''
@@ -337,7 +338,6 @@ def refreshBrowser(browser,display):
     log.warn('refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
     closeBrowser(browser,display)
-    time.sleep(2)
     browser,display = getBrowser()
   return browser,display
 
