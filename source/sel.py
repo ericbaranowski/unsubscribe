@@ -47,8 +47,7 @@ def browserGetPage(browser,url):
 
 from pyvirtualdisplay import Display
 from selenium import webdriver
-display = Display(visible=0, size=(800, 600))
-display.start()
+display = None
 
 def getBrowser():
   # import subprocess
@@ -58,8 +57,9 @@ def getBrowser():
   #   log.info('got here')
   log.info('getting browser')
   global display
-  display = Display(visible=0, size=(800, 600))
-  display.start()
+  if not display:
+    display = Display(visible=0, size=(800, 600))
+    display.start()
   # capabilities = webdriver.DesiredCapabilities().FIREFOX
   # capabilities["marionette"] = False
   # browser = webdriver.Firefox(capabilities=capabilities)
@@ -355,9 +355,9 @@ def clickRecursive(elem):
   return False
 
 def closeBrowser(browser):
-  global display
+  #global display
   browser.close()
-  display.stop()
+  #display.stop()
   time.sleep(2)
 
 def refreshBrowser(browser):
