@@ -28,8 +28,8 @@ def log(entry, bucket='main', severity='INFO'):
     else:
       fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
       entry +=  ' '+str(fname)+' '+ str(exc_tb.tb_lineno)
-      entry += ' ' + traceback.extract_tb(exc_tb)
-      entry += ' ' + traceback.extract_stack()
+      entry += ' ' + str(traceback.extract_tb(exc_tb))
+      entry += ' ' + str(traceback.extract_stack())
   except Exception as e:
     entry += ' bad exc_info' + str(e)
   if logger:
