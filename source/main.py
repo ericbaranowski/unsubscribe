@@ -88,9 +88,9 @@ def removeDockerCruft():
   os.system('rm -rf /var/lib/docker/aufs')
   log.info('docker cruft deleted')
 
-def handleDB():
+def handleDB(it):
   ll, origSet = getFive()
-  if not ll:
+  if not ll and it > 3:
     removeDockerCruft()
     log.info('empty turning off')
     time.sleep(120)
@@ -110,8 +110,7 @@ def handleDB():
     browser,display = selenium.refreshBrowser(browser,display)
   for ss in origSet:
     commit('delete from unsubs where hash=%s', ss)
-  browser.quit()
-  display.popen.kill()
+  selenium.closeBrowser(browser,display)
 
 def unsubscribe(unsub, browser):
   try:
@@ -181,15 +180,11 @@ def printAnalytics():
     
 def mainSlave():
   log.tid = newHash()
-  # stagger when the slaves process the db
-  rr = 60
-  log.info('slave sleeping for '+str(rr))
-  time.sleep(rr)
   it = 0
   while True:
     it += 1
     try:
-      handleDB()
+      handleDB(it)
     except Exception as e:
       log.info('exception', e)
     rr = random.randint(20,40)

@@ -23,6 +23,7 @@ def log(entry, bucket='main', severity='INFO'):
   try:
     exc_type, exc_obj, exc_tb = sys.exc_info()
     entry += ' ' + str(exc_type)
+    entry += ' ' + str(exc_obj)
     if not exc_type:
       pass
     else:

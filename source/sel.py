@@ -1,5 +1,4 @@
 import time
-from selenium import webdriver
 import random
 import log
 
@@ -16,8 +15,11 @@ confirmPositives = ['unsubscribed', 'success', 'thank you', 'updated', 'have rem
 js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
 def getBrowser():
+  import os
+  os.system('rm -rf /tmp')
   log.info('getting browser')
   from pyvirtualdisplay import Display
+  from selenium import webdriver
   display = Display(visible=0, size=(800, 600))
   display.start()
   capabilities = webdriver.DesiredCapabilities().FIREFOX
@@ -26,12 +28,6 @@ def getBrowser():
   log.info('got browser')
   #browser.implicitly_wait(10)
   return browser, display
-    
-def getBrowserNoDisplay():
-  log.info('getting browser')
-  browser = webdriver.Firefox()
-  log.info('got browser')
-  return browser
 
 def getPageBody(browser):
   body = browser.execute_script(js_code)
@@ -322,6 +318,10 @@ def clickRecursive(elem):
       return True
   return False
 
+def closeBrowser(browser,display):
+  browser.quit()
+  display.stop()
+
 def refreshBrowser(browser,display):
   body = ''
   try:
@@ -332,8 +332,7 @@ def refreshBrowser(browser,display):
   except Exception as e:
     log.warn('refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
-    browser.quit()
-    display.stop()
+    closeBrowser(browser,display)
     time.sleep(2)
     browser,display = getBrowser()
   return browser,display
