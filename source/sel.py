@@ -35,7 +35,7 @@ class Timeout():
 
 def browserGetPage(browser,url): 
   try:
-    with Timeout(pageDelay):
+    with Timeout(pageTimeout):
       browser.get(url)
   except Exception as e:
     log.warn(e)
@@ -57,6 +57,9 @@ def getBrowser():
   # except:
   #   log.info('got here')
   log.info('getting browser')
+  global display
+  display = Display(visible=0, size=(800, 600))
+  display.start()
   # capabilities = webdriver.DesiredCapabilities().FIREFOX
   # capabilities["marionette"] = False
   # browser = webdriver.Firefox(capabilities=capabilities)
