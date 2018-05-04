@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 RUN apt-get update -y
 RUN apt-get install -y --fix-missing build-essential 
@@ -9,9 +9,9 @@ RUN apt-get install -y --fix-missing libmysqlclient-dev
 RUN apt-get install -y --fix-missing git  
 RUN apt-get install -y --fix-missing wget 
 RUN apt-get install -y --fix-missing unzip 
+RUN apt-get install -y --fix-missing firefox
 RUN apt-get install -y --fix-missing xvfb 
 RUN apt-get install -y --fix-missing tar
-RUN apt-get install -y --fix-missing firefox=57.0.4
 #libglib2.0-0 libxi6 libgconf-2-4 ibglib2.0-0 libxss1 libgconf-2-4 libnss3 libfontconfig libX11.6 
 
 
