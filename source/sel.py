@@ -18,8 +18,8 @@ def getBrowser():
   import os
   try:
     os.system('rm -rf /tmp')
-  except:
-    pass
+  except Exception as e:
+    log.info(e)
   log.info('getting browser')
   from pyvirtualdisplay import Display
   from selenium import webdriver
