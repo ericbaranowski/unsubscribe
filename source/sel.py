@@ -39,10 +39,17 @@ def browserGetPage(browser,url):
       browser.get(url)
   except Exception as e:
     log.warn(e)
-    
+    log.warn('timed out on' + url)
+    closeBrowser(browser)
+    browser = getBrowser()
   return browser
     
-  
+
+from pyvirtualdisplay import Display
+from selenium import webdriver
+display = Display(visible=0, size=(800, 600))
+display.start()
+
 def getBrowser():
   # import subprocess
   # try:
@@ -50,17 +57,13 @@ def getBrowser():
   # except:
   #   log.info('got here')
   log.info('getting browser')
-  from pyvirtualdisplay import Display
-  from selenium import webdriver
-  display = Display(visible=0, size=(800, 600))
-  display.start()
   # capabilities = webdriver.DesiredCapabilities().FIREFOX
   # capabilities["marionette"] = False
   # browser = webdriver.Firefox(capabilities=capabilities)
   browser = webdriver.Firefox()
   log.info('got browser')
   #browser.implicitly_wait(10)
-  return browser, display
+  return browser
 
 def getPageBody(browser):
   body = browser.execute_script(js_code)
@@ -348,12 +351,13 @@ def clickRecursive(elem):
       return True
   return False
 
-def closeBrowser(browser,display):
+def closeBrowser(browser):
+  global display
   browser.close()
   display.stop()
   time.sleep(2)
 
-def refreshBrowser(browser,display):
+def refreshBrowser(browser):
   body = ''
   try:
     url = 'https://www.google.com/search?q=check+browser'
@@ -362,7 +366,7 @@ def refreshBrowser(browser,display):
   except Exception as e:
     log.warn('refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
-    closeBrowser(browser,display)
-    browser,display = getBrowser()
-  return browser,display
+    closeBrowser(browser)
+    browser = getBrowser()
+  return browser
 

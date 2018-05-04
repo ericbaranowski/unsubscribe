@@ -96,7 +96,7 @@ def handleDB(it):
     time.sleep(120)
     turnOff()
     return
-  browser,display = selenium.getBrowser()
+  browser = selenium.getBrowser()
   for uns in ll:
     log.info('hashh',uns.hashh)
     res = unsubscribe(uns, browser)
@@ -107,10 +107,10 @@ def handleDB(it):
       log.info('confirmed unsub')
       commit('insert into usercount (another) values (1)')
       addEmailToSqlAnalytics(uns,True)
-    browser,display = selenium.refreshBrowser(browser,display)
+    browser = selenium.refreshBrowser(browser)
   for ss in origSet:
     commit('delete from unsubs where hash=%s', ss)
-  selenium.closeBrowser(browser,display)
+  selenium.closeBrowser(browser)
 
 def unsubscribe(unsub, browser):
   try:
