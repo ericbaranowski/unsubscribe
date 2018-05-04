@@ -2,11 +2,12 @@ git add .
 git commit -m 'transfer'
 git push
 
+sudo su
 cd unsubscribe; git pull; cd ..
 cp unsubscribe/Dockerfile* .
-docker build -f Dockerfile_slave -t slave .
+docker build -f Dockerfile_test -t test .
 docker rm -f $(docker ps -aq); 
-docker run --restart always -t slave  &
+docker run   -t test  &
 
 
 sudo su
