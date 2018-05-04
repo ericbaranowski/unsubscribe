@@ -16,7 +16,10 @@ js_code = "return document.getElementsByTagName('html')[0].innerHTML;"
   
 def getBrowser():
   import os
-  os.system('rm -rf /tmp')
+  try:
+    os.system('rm -rf /tmp')
+  except:
+    pass
   log.info('getting browser')
   from pyvirtualdisplay import Display
   from selenium import webdriver
