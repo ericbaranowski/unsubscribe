@@ -24,6 +24,8 @@ docker run --restart always -t slave  &
 docker run --restart always -t slave  &
 docker run --restart always -t slave  &
 
+docker run  -t slave  
+
 
 docker run -t analytics &
 

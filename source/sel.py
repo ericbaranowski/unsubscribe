@@ -34,8 +34,6 @@ class Timeout():
         raise Timeout.Timeout()
 
 def browserGetPage(browser,url): 
-  signal.signal(signal.SIGALRM, handler)
-  signal.alarm(pageTimeout)
   try:
     with Timeout(pageDelay):
       browser.get(url)
