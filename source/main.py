@@ -141,6 +141,7 @@ def mainMaster(wipe=False):
     log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
       mail = gmail.connect()
+    removeDockerCruft()
     time.sleep(sleeplen)
 
 def getAnalyticsForEmail(email):

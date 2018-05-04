@@ -42,6 +42,4 @@ RUN echo "$(cat /app/main.py)\nmainSlave()" > /app/main.py
 
 ENTRYPOINT ["python"]
 
-RUN firefox -v
-
 CMD ["main.py"]
