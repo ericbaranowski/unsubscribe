@@ -37,11 +37,15 @@ def browserGetPage(browser,url):
   try:
     with Timeout(pageTimeout):
       log.info('start get')
-      browser.get(url)
-      log.info('end get')
+      try:
+        browser.get(url)
+        log.info('end get')
+      except Exception as e:
+        log.warn('exception getting url '+ url)
+        log.warn(e)
   except Exception as e:
-    log.warn(e)
     log.warn('timed out on' + url)
+    log.warn(e)
     closeBrowser(browser)
     browser = getBrowser()
   return browser
@@ -357,10 +361,14 @@ def clickRecursive(elem):
   return False
 
 def closeBrowser(browser):
-  #global display
-  browser.close()
-  #display.stop()
-  time.sleep(2)
+  try:
+    #global display
+    browser.close()
+    #display.stop()
+    time.sleep(2)
+  except Exception as e:
+    log.warn('exception closing browser')
+    log.warn(e)
 
 def refreshBrowser(browser):
   body = ''
@@ -369,7 +377,7 @@ def refreshBrowser(browser):
     browser = browserGetPage(browser,url)
     body = getPageBody(browser).lower()
   except Exception as e:
-    log.warn('refreshing browser', str(e))
+    log.warn('exception refreshing browser', str(e))
   if 'whatsmybrowser.org' not in body:
     closeBrowser(browser)
     browser = getBrowser()
