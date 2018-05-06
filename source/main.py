@@ -37,7 +37,7 @@ class UnSub:
 
 def getFive():
   # random order in case there's two slaves, don't likely grab the same unsub in high volume
-  results = fetch('select url, email, hash from unsubs order by RAND() limit 5')
+  results = fetch('select url, email, hash from unsubs order by RAND() limit 1')
   s = set()
   for r in results:
     s.add(str(r[2]))
@@ -89,28 +89,30 @@ def removeDockerCruft():
   log.info('docker cruft deleted')
 
 def handleDB(it):
-  ll, origSet = getFive()
-  if not ll and it > 3:
-    removeDockerCruft()
-    log.info('empty turning off')
-    time.sleep(120)
-    turnOff()
-    return
-  browser = selenium.getBrowser()
-  for uns in ll:
-    log.info('hashh',uns.hashh)
-    res = unsubscribe(uns, browser)
-    if not res:
-      log.info('failed confirmation', uns.hashh)
-      addEmailToSqlAnalytics(uns,False)
-    else:
-      log.info('confirmed unsub')
-      commit('insert into usercount (another) values (1)')
-      addEmailToSqlAnalytics(uns,True)
-    browser = selenium.refreshBrowser(browser)
-  for ss in origSet:
-    commit('delete from unsubs where hash=%s', ss)
-  selenium.closeBrowser(browser)
+  for jj in range(10):
+    ll, origSet = getFive()
+    if not ll:
+      if it > 3:
+        removeDockerCruft()
+        log.info('empty turning off')
+        time.sleep(120)
+        turnOff()
+      return
+    browser = selenium.getBrowser()
+    for uns in ll:
+      log.info('hashh',uns.hashh)
+      res = unsubscribe(uns, browser)
+      if not res:
+        log.info('failed confirmation', uns.hashh)
+        addEmailToSqlAnalytics(uns,False)
+      else:
+        log.info('confirmed unsub')
+        commit('insert into usercount (another) values (1)')
+        addEmailToSqlAnalytics(uns,True)
+      #browser = selenium.refreshBrowser(browser)
+    for ss in origSet:
+      commit('delete from unsubs where hash=%s', ss)
+    selenium.closeBrowser(browser)
 
 def unsubscribe(unsub, browser):
   try:
@@ -119,6 +121,18 @@ def unsubscribe(unsub, browser):
   except Exception as e:
     log.info(e)
   return False
+  
+def numUnsubs():
+  results = fetch('select hash from unsubs')
+  num = len(results)
+  return num
+
+def deleteAllUnsubs():
+  results = fetch('select hash from unsubs')
+  if len(results) < 15:
+    for r in results:
+      hh = r[0]
+      commit('delete from unsubs where hash=%s',hh)
   
 def mainMaster(wipe=False):
   log.tid = newHash()
@@ -177,14 +191,23 @@ def printAnalytics():
   log.info(results)
   log.info('success / not success for william.k.dvorak')
   log.info(getAnalyticsForEmail('william.k.dvorak@gmail.com'))
-    
+
+
 def mainSlave():
   log.info('starting slave')
   log.tid = newHash()
   it = 0
+  oldNum = 0
+  timesSame = 0
   while True:
     it += 1
     try:
+      num = numUnsubs()
+      if num == oldNum:
+        timesSame += 1
+      oldNum = num
+      if timesSame > 15:
+        deleteAllUnsubs()
       handleDB(it)
     except Exception as e:
       log.info('exception', e)

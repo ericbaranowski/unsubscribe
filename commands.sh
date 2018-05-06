@@ -1,17 +1,3 @@
-git add .
-git commit -m 'transfer'
-git push
-
-sudo su
-cd unsubscribe; git pull; cd ..
-cp unsubscribe/Dockerfile* .
-docker build -t master .
-docker build -f Dockerfile_slave -t slave .
-docker rm -f $(docker ps -aq); 
-
-docker run  -t slave  
-
-
 sudo su
 cd unsubscribe; git pull; cd ..
 cp unsubscribe/Dockerfile* .
