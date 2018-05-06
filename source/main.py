@@ -129,6 +129,7 @@ def numUnsubs():
 
 def deleteAllUnsubs():
   results = fetch('select hash from unsubs')
+  log.info('deleting all unsubs with # unsubs ' + str(len(results)))
   if len(results) < 15:
     for r in results:
       hh = r[0]
