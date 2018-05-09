@@ -91,8 +91,8 @@ def restart():
 
 def removeDockerCruft():
   import os
-  os.system('rm -rf /var/lib/docker/aufs')
-  log.info('docker cruft deleted')
+  #os.system('rm -rf /var/lib/docker/aufs')
+  #log.info('docker cruft deleted')
 
 def handleDB(it):
   for jj in range(10):
