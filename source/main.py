@@ -83,6 +83,12 @@ def turnOff():
   os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
   log.info('called stop')
 
+def restart():
+  import os
+  log.info('restarting')
+  os.system('sudo reboot')
+  log.info('called restart')
+
 def removeDockerCruft():
   import os
   os.system('rm -rf /var/lib/docker/aufs')
@@ -202,6 +208,10 @@ def mainSlave():
   timesSame = 0
   while True:
     it += 1
+    if it % 10 == 0:
+      removeDockerCruft()
+    if it > 30:
+      restart()
     try:
       num = numUnsubs()
       log.info('current num unsubs ' + str(num))
