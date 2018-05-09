@@ -18,6 +18,12 @@ docker run  -t slave
 docker run -t analytics &
 
 
+apt-get install git docker.io
+# install gcloud
+0 0,3,6,9,12,15,18,21 * * * sudo gcloud compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub2"
+# every 23 hours
+55 2,8,14,20 * * * sudo gcloud compute --project "hosting-2718" instances stop --zone "us-east1-d" "unsub2"
+
 vim /etc/rc.local
 cd /home/wdvorak; sudo docker build -t master . 
 cd /home/wdvorak; sudo docker rm -f $(docker ps -aq)

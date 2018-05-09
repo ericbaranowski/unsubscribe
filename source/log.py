@@ -21,6 +21,7 @@ if not allOff and cloudLog:
 
 def log(entry, bucket='main', severity='INFO'):
   if allOff:
+    print entry
     return
   try:
     exc_type, exc_obj, exc_tb = sys.exc_info()

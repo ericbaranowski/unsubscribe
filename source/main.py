@@ -101,7 +101,7 @@ def handleDB(it):
       if it > 3:
         removeDockerCruft()
         log.info('empty turning off')
-        time.sleep(120)
+        time.sleep(120)  # wait for master to finish
         turnOff()
       return
     browser = selenium.getBrowser()
@@ -208,11 +208,11 @@ def mainSlave():
   timesSame = 0
   while True:
     it += 1
-    if it % 10 == 0:
-      removeDockerCruft()
-    if it > 30:
-      restart()
     try:
+      if it % 10 == 0:
+        removeDockerCruft()
+      if it > 30:
+        restart()
       num = numUnsubs()
       log.info('current num unsubs ' + str(num))
       if num == oldNum:
