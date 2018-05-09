@@ -204,7 +204,7 @@ def mainSlave():
     it += 1
     try:
       num = numUnsubs()
-      log.info('current num unsubs' + str(num))
+      log.info('current num unsubs ' + str(num))
       if num == oldNum:
         timesSame += 1
       oldNum = num

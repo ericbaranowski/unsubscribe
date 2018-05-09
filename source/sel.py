@@ -36,10 +36,8 @@ class Timeout():
 def browserGetPage(browser,url): 
   try:
     with Timeout(pageTimeout):
-      log.info('start get')
       try:
         browser.get(url)
-        log.info('end get')
       except Exception as e:
         log.warn('exception getting url '+ url)
         log.warn(e)
@@ -196,7 +194,7 @@ def selects(browser):
     clicked = False
     for child in children:
       text = getText(child)
-      if any(pos in text for pos in radioPositives):
+      if text and any(pos in text for pos in radioPositives):
         if doFun(child.click):
           clicked = True
           log.info('clicked select')
@@ -223,7 +221,7 @@ def radios(browser, unused):
     clicked = False
     for radio in l:
       text = getText(radio)
-      if any(pos in text for pos in radioPositives):
+      if text and any(pos in text for pos in radioPositives):
         if doFun(radio.click):
           clicked = True
           log.info('clicked radio')
@@ -334,7 +332,7 @@ def forms(browser, email):
     children = form.find_elements_by_xpath(".//a")
     for child in children:
       text = getText(child)
-      if child.tag_name == "a" and any(pos in text for pos in buttonPositives):
+      if child.tag_name == "a" and text and any(pos in text for pos in buttonPositives):
         time.sleep(delay)
         funn = child.submit
         if child.get_attribute('onclick'):
