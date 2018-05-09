@@ -1,4 +1,5 @@
-
+#SHELL=/bin/sh
+#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 # 1 6 * * * python /home/wdvorak/unsubscribe/source/removeDockerCruft.py
 
 def removeDockerCruft():
