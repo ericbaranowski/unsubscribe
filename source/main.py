@@ -80,7 +80,7 @@ def addEmailToSqlAnalytics(uns, success=False):
 def turnOff():
   import os
   log.info('done sleeping')
-  os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub"')
+  os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub2"')
   log.info('called stop')
 
 def restart():
