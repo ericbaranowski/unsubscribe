@@ -4,12 +4,13 @@ import traceback
 import sys
 import os
 
+allOff = True
 cloudLog = True
 logger = None
 tid = 'tiddefault'
 
 
-if cloudLog:
+if not allOff and cloudLog:
   bucket = 'main'
   try:
     from google.cloud import logging
@@ -19,7 +20,8 @@ if cloudLog:
     pass
 
 def log(entry, bucket='main', severity='INFO'):
-
+  if allOff:
+    return
   try:
     exc_type, exc_obj, exc_tb = sys.exc_info()
     entry += ' ' + str(exc_type)
