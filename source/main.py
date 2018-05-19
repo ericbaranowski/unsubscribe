@@ -86,7 +86,7 @@ def turnOffInstanceFromDocker():
 def turnOff():
   import os
   log.info('done sleeping')
-  os.system('sudo shutdown')
+  os.system('gcloud -q compute instances delete spot1 --zone=us-east1-d')
   log.info('called stop')
 
 def restart():
@@ -233,3 +233,7 @@ def mainSlave():
     time.sleep(rr)
     log.info('sleeping for '+str(rr))
     time.sleep(rr)
+
+
+
+#firstCommand()

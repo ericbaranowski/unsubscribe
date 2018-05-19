@@ -27,11 +27,12 @@ pip install -r /app/requirements.txt
 
 
 
-cp unsubscribe/source/ /app/
-cp auth /auth/
+cp -a /app/unsubscribe/source/. /app/
+cp -a /app/auth/. /auth/
 
 export PYTHONPATH="/app/"
 
-echo "$(cat /app/main.py)\nmainSlave()" > /app/main.py
+sed -i s/#firstCommand/mainSlave/g /app/main.py
+sed -i s/spot1/spot5/g /app/main.py
 
 python main.py
