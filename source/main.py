@@ -163,8 +163,11 @@ def mainMaster(wipe=False):
       gmail.readEmailFromGmail(mail)
     except Exception as e:
       log.info('exception', e)
-      if it % 2 == 0:
-        mail = gmail.connect()
+      if it % 2 == 1:
+        try:
+          mail = gmail.connect()
+        except Exception as e:
+          log.info('exception', e)
     sleeplen = 60
     if it % 1000 == 0:
       mail = gmail.connect()

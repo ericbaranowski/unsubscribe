@@ -138,6 +138,7 @@ def connect():
     imap = "imap.gmail.com"
   
     mail = imaplib.IMAP4_SSL(imap)
+    print address, password
     mail.login(address,password)
   except Exception as e:
     log.info('exception connecting to gmail', e)
