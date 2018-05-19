@@ -79,13 +79,13 @@ def addEmailToSqlAnalytics(uns, success=False):
 
 def turnOffInstanceFromDocker():
   import os
-  log.info('done sleeping')
+  log.info('done sleeping in master')
   os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub2"')
   log.info('called stop')
 
 def turnOff():
   import os
-  log.info('done sleeping')
+  log.info('done sleeping in slave')
   os.system('gcloud -q compute instances delete spot0 --zone=us-east1-d')
   os.system('gcloud -q compute instances delete spot6 --zone=us-east1-d')
   os.system('gcloud -q compute instances delete spot12 --zone=us-east1-d')
@@ -165,12 +165,12 @@ def mainMaster(wipe=False):
       log.info('exception', e)
       if it % 2 == 0:
         mail = gmail.connect()
-    sleeplen = 3600
+    sleeplen = 60
     if it % 1000 == 0:
       mail = gmail.connect()
-    removeDockerCruft()
-    turnOffInstanceFromDocker()
+    #removeDockerCruft()
     time.sleep(sleeplen)
+    turnOffInstanceFromDocker()
 
 def getAnalyticsForEmail(email):
   digest = hashEmail(email)
@@ -217,8 +217,6 @@ def mainSlave():
   while True:
     it += 1
     try:
-      if it % 10 == 0:
-        removeDockerCruft()
       if it > 30:
         restart()
       num = numUnsubs()
