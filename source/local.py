@@ -14,6 +14,10 @@ def countPending():
   print results
   results = fetch('select count(hash) from unsubs')
   print results
+  results = fetch('select count(distinct unsubhash) as b from anonymousanalytics group by emailhash order by b desc')
+  print results
+  results = fetch('select count(distinct emailhash ) from anonymousanalytics ')
+  print results
   
 countPending()
 #import sel

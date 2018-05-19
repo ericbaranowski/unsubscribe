@@ -77,10 +77,16 @@ def addEmailToSqlAnalytics(uns, success=False):
   if url:
     fullAnalytics(email, url, success)
 
-def turnOff():
+def turnOffInstanceFromDocker():
   import os
   log.info('done sleeping')
   os.system('gcloud compute  --project "hosting-2718"  instances stop --zone "us-east1-d" "unsub2"')
+  log.info('called stop')
+
+def turnOff():
+  import os
+  log.info('done sleeping')
+  os.system('sudo shutdown')
   log.info('called stop')
 
 def restart():
@@ -101,7 +107,7 @@ def handleDB(it):
       if it > 3:
         removeDockerCruft()
         log.info('empty turning off')
-        time.sleep(120)  # wait for master to finish
+        #time.sleep(120)  # wait for master to finish
         turnOff()
       return
     browser = selenium.getBrowser()
@@ -158,10 +164,10 @@ def mainMaster(wipe=False):
       if it % 2 == 0:
         mail = gmail.connect()
     sleeplen = 3600
-    log.info('sleeping for '+str(sleeplen))
     if it % 1000 == 0:
       mail = gmail.connect()
     removeDockerCruft()
+    turnOffInstanceFromDocker()
     time.sleep(sleeplen)
 
 def getAnalyticsForEmail(email):
