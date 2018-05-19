@@ -86,7 +86,10 @@ def turnOffInstanceFromDocker():
 def turnOff():
   import os
   log.info('done sleeping')
-  os.system('gcloud -q compute instances delete spot1 --zone=us-east1-d')
+  os.system('gcloud -q compute instances delete spot0 --zone=us-east1-d')
+  os.system('gcloud -q compute instances delete spot6 --zone=us-east1-d')
+  os.system('gcloud -q compute instances delete spot12 --zone=us-east1-d')
+  os.system('gcloud -q compute instances delete spot18 --zone=us-east1-d')
   log.info('called stop')
 
 def restart():
@@ -104,8 +107,7 @@ def handleDB(it):
   for jj in range(10):
     ll, origSet = getFive()
     if not ll:
-      if it > 3:
-        removeDockerCruft()
+      if it > 2:
         log.info('empty turning off')
         #time.sleep(120)  # wait for master to finish
         turnOff()

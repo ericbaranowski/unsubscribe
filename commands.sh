@@ -21,16 +21,23 @@ docker run -t analytics &
 gcloud compute --project=hosting-2718 instances create spot5 --zone=us-east1-d --machine-type=n1-standard-1 --subnet=default --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/devstorage.read_only,https://www.googleapis.com/auth/logging.write,https://www.googleapis.com/auth/monitoring.write,https://www.googleapis.com/auth/servicecontrol,https://www.googleapis.com/auth/service.management.readonly,https://www.googleapis.com/auth/trace.append --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot5
 
 
-gcloud compute --project=hosting-2718 instances create spot5 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot5
+gcloud -q compute --project=hosting-2718 instances create spot5 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot5
 
 
 gcloud -q compute instances delete spot5 --zone=us-east1-d 
 
 
+0 0 * * * sudo gcloud -q compute --project=hosting-2718 instances create spot0 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot0
+
+0 6 * * * sudo gcloud -q compute --project=hosting-2718 instances create spot6 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot6
+
+0 12 * * * sudo gcloud -q compute --project=hosting-2718 instances create spot12 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot12
+
+0 18 * * * sudo gcloud -q compute --project=hosting-2718 instances create spot18 --zone=us-east1-d --machine-type=n1-standard-1  --metadata=startup-script-url=gs://startupscript-2718/startup.sh --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --service-account=182434325615-compute@developer.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform --image=ubuntu-1404-trusty-v20180509 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=spot18
 
 apt-get install git docker.io
 # install gcloud
-0 0,3,6,9,12,15,18,21 * * * sudo gcloud compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub2"
+0 5,11,17,23 * * * sudo gcloud compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub2"
 # every 23 hours
 55 2,8,14,20 * * * sudo gcloud compute --project "hosting-2718" instances stop --zone "us-east1-d" "unsub2"
 

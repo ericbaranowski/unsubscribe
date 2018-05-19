@@ -33,6 +33,8 @@ cp -a /app/auth/. /auth/
 export PYTHONPATH="/app/"
 
 sed -i s/#firstCommand/mainSlave/g /app/main.py
-sed -i s/spot1/spot5/g /app/main.py
+#sed -i s/spot1/spot5/g /app/main.py
 
-python main.py
+python main.py &
+python main.py &
+python main.py &
