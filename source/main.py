@@ -13,6 +13,10 @@ from datetime import timedelta
 
 salt = 'mysalt'
 
+
+class Timeout(selenium.Timeout):
+  pass
+
 def newHash():
   lets = string.ascii_letters[:26] + string.digits
   ans = 'tid'
@@ -130,7 +134,20 @@ def handleDB(it):
 
 def unsubscribe(unsub, browser):
   try:
-    ans = selenium.processPage(unsub,browser)
+    ans = False
+    timeout = 120
+    try:
+      with Timeout(timeout):
+        try:
+          ans = selenium.processPage(unsub,browser)
+        except Exception as e:
+          log.warn('exception processing unsub '+ st(unsub))
+          log.warn(e)
+          ans = False
+    except Exception as e:
+      log.warn('timed out on' + str(unsub))
+      log.warn(e)
+      ans = False
     return ans
   except Exception as e:
     log.info(e)

@@ -12,6 +12,7 @@ docker run --restart always -t slave  &
 docker run --restart always -t slave  &
 docker run --restart always -t slave  &
 
+docker run  -t master  
 docker run  -t slave  
 
 
@@ -37,7 +38,7 @@ gcloud -q compute instances delete spot5 --zone=us-east1-d
 
 apt-get install git docker.io
 # install gcloud
-0 5,11,17,23 * * * sudo gcloud compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub2"
+0 5,11,17,23 * * * sudo gcloud -q compute --project "hosting-2718" instances start --zone "us-east1-d" "unsub2"
 # every 23 hours
 55 2,8,14,20 * * * sudo gcloud compute --project "hosting-2718" instances stop --zone "us-east1-d" "unsub2"
 
