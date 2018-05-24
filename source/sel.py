@@ -37,7 +37,6 @@ def browserGetPage(browser,url):
   try:
     with Timeout(pageTimeout):
       try:
-        time.sleep(121)
         browser.get(url)
       except Exception as e:
         log.warn('exception getting url '+ url)

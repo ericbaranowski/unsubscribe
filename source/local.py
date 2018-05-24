@@ -126,5 +126,5 @@ def deleteLastReads():
   results = fetch('select email from readmail')
   print results[-10:]
   
-deleteLastReads()
+#deleteLastReads()
 #deleteReadEmail17days()
