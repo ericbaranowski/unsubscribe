@@ -112,5 +112,19 @@ def deleteReadEmail17days():
     start += 1
   results = fetch('select email from readmail')
   print results[-10:]
+
+
   
+def deleteLastReads():
+  results = fetch('select email from readmail')
+  print results[-10:]
+  
+  total = len(results)
+  
+  for r in results[total-150:]:
+    commit('delete from readmail where email=%s',r[0])
+  results = fetch('select email from readmail')
+  print results[-10:]
+  
+deleteLastReads()
 #deleteReadEmail17days()
