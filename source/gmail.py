@@ -122,7 +122,11 @@ def processOne(mail, i, actuallyCommit=False):
     body = body.replace('=3D','=')
     
     candidates = getCandidates(body)
+    i = 0
     for c in candidates:
+      if i > 5:
+        break
+      i += 1 
       log.info('candidate', fromAddress, c)
       if actuallyCommit:
         commit('insert into unsubs (hash, url, email) values (%s, %s, %s)', (hashh, c, fromAddress))

@@ -45,7 +45,7 @@ def getFive():
   s = set()
   for r in results:
     s.add(str(r[2]))
-  origSet = s
+  origSet = set(s)
   if not s:
     return [], origSet
   s = str(list(s)).replace('[','(').replace(']',')')
@@ -117,17 +117,22 @@ def handleDB(it):
         turnOff()
       return
     browser = selenium.getBrowser()
-    for uns in ll:
-      log.info('hashh',uns.hashh)
-      res = unsubscribe(uns, browser)
-      if not res:
-        log.info('failed confirmation', uns.hashh)
-        addEmailToSqlAnalytics(uns,False)
-      else:
-        log.info('confirmed unsub')
-        commit('insert into usercount (another) values (1)')
-        addEmailToSqlAnalytics(uns,True)
-      #browser = selenium.refreshBrowser(browser)
+    log.info(str(len(ll))+str(ll)+str(jj))
+    try:
+      for uns in ll:
+        log.info('hashh',uns.hashh)
+        res = unsubscribe(uns, browser)
+        if not res:
+          log.info('failed confirmation', uns.hashh)
+          addEmailToSqlAnalytics(uns,False)
+        else:
+          log.info('confirmed unsub')
+          commit('insert into usercount (another) values (1)')
+          addEmailToSqlAnalytics(uns,True)
+        #browser = selenium.refreshBrowser(browser)
+    except Exception as e:
+      log.warn(e)
+    log.info('deleting from unsubs '+str(origSet))
     for ss in origSet:
       commit('delete from unsubs where hash=%s', ss)
     selenium.closeBrowser(browser)
