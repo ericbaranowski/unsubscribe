@@ -119,7 +119,11 @@ def handleDB(it):
     browser = selenium.getBrowser()
     log.info(str(len(ll))+str(ll)+str(jj))
     try:
+      i = 0
       for uns in ll:
+        if i > 6:
+          break
+        i+=1
         log.info('hashh',uns.hashh)
         res = unsubscribe(uns, browser)
         if not res:
