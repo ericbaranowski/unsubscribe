@@ -19,6 +19,16 @@ def countPending():
   results = fetch('select count(distinct emailhash ) from anonymousanalytics ')
   print results
   
+def percentSuccess():
+  results = fetch('select success, count(*) from anonymousanalytics group by success')
+  print 'success ', results
+  dt = datetime.datetime.now() - timedelta(days=20)
+  results = fetch('select success, count(*) from anonymousanalytics  where stamp > %s group by success',str(dt)[:11])
+  print 'success within 20 days', results
+# ("Fetch query:select success, count(*) from anonymousanalytics  where stamp > %s group by success['2018-06-02 ']",)
+#   success within 20 days [[0L, 651L], [1L, 787L]]
+  
+percentSuccess()
 countPending()
 #import sel
 
